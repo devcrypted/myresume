@@ -152,12 +152,15 @@
             text-decoration: none;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 0.5rem;
             transition: all 0.3s ease;
             cursor: pointer;
             font-size: 1rem;
             position: relative;
             overflow: hidden;
+            min-width: 180px;
+            text-align: center;
         }
 
         .btn-primary {
@@ -286,6 +289,56 @@
             box-shadow: var(--shadow-lg);
             border: 1px solid var(--border);
             position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .timeline-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            margin-top: 0;
+        }
+
+        .timeline-details.expanded {
+            max-height: 500px;
+            margin-top: 1rem;
+        }
+
+        .timeline-details ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .timeline-details li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            position: relative;
+        }
+
+        .timeline-details li::before {
+            content: '▸';
+            color: var(--accent-primary);
+            font-weight: bold;
+            position: absolute;
+            left: -1rem;
+        }
+
+        .expand-indicator {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            color: var(--accent-primary);
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .expand-indicator.expanded {
+            transform: rotate(90deg);
         }
 
         .timeline-dot {
@@ -375,11 +428,12 @@
         .project-impact {
             margin-top: 1rem;
             padding: 1rem;
-            background: var(--secondary-bg);
-            border-radius: 12px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 8px;
             border-left: 4px solid var(--success);
             font-weight: 500;
             color: var(--success);
+            font-style: italic;
         }
 
         /* Skills */
@@ -488,7 +542,117 @@
             margin-top: 0.5rem;
         }
 
-        /* Contact */
+        /* Certifications */
+        .certifications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .certification-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .certification-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .certification-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-primary);
+        }
+
+        .cert-badge {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .cert-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .cert-issuer {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Contact Form */
+        .contact-form {
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            max-width: 600px;
+            margin: 3rem auto 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
         .contact-info {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -827,19 +991,42 @@
 
     <section id="certifications">
         <div class="container">
-            <h2 class="section-title">Certifications</h2>
-            <div class="skills-container">
-                <div class="skill-category">
-                    <h3>🏆 Professional Certifications</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">Azure DevOps Expert (AZ-400)</span>
-                        <span class="skill-tag">Terraform Associate</span>
-                        <span class="skill-tag">CKA - CNCF</span>
-                        <span class="skill-tag">AZ-104</span>
-                        <span class="skill-tag">AZ-204</span>
-                        <span class="skill-tag">AZ-500</span>
-                        <span class="skill-tag">AZ-700</span>
-                    </div>
+            <h2 class="section-title">Professional Certifications</h2>
+            <div class="certifications-grid">
+                <div class="certification-card">
+                    <div class="cert-badge">AZ</div>
+                    <div class="cert-name">Azure DevOps Expert</div>
+                    <div class="cert-issuer">Microsoft • AZ-400</div>
+                </div>
+                <div class="certification-card">
+                    <div class="cert-badge">TF</div>
+                    <div class="cert-name">Terraform Associate</div>
+                    <div class="cert-issuer">HashiCorp</div>
+                </div>
+                <div class="certification-card">
+                    <div class="cert-badge">K8</div>
+                    <div class="cert-name">Certified Kubernetes Administrator</div>
+                    <div class="cert-issuer">Cloud Native Computing Foundation</div>
+                </div>
+                <div class="certification-card">
+                    <div class="cert-badge">AZ</div>
+                    <div class="cert-name">Azure Administrator Associate</div>
+                    <div class="cert-issuer">Microsoft • AZ-104</div>
+                </div>
+                <div class="certification-card">
+                    <div class="cert-badge">AZ</div>
+                    <div class="cert-name">Azure Developer Associate</div>
+                    <div class="cert-issuer">Microsoft • AZ-204</div>
+                </div>
+                <div class="certification-card">
+                    <div class="cert-badge">AZ</div>
+                    <div class="cert-name">Azure Security Engineer</div>
+                    <div class="cert-issuer">Microsoft • AZ-500</div>
+                </div>
+                <div class="certification-card">
+                    <div class="cert-badge">AZ</div>
+                    <div class="cert-name">Azure Network Engineer</div>
+                    <div class="cert-issuer">Microsoft • AZ-700</div>
                 </div>
             </div>
         </div>
@@ -867,7 +1054,37 @@
                         LinkedIn Profile
                     </a>
                 </div>
+                <div class="contact-item">
+                    <div class="contact-icon">📅</div>
+                    <a href="https://kamal.cal.com" target="_blank" class="contact-link">
+                        Schedule a Meeting
+                    </a>
+                </div>
             </div>
+
+            <form class="contact-form" id="contactForm">
+                <h3 style="text-align: center; margin-bottom: 2rem; color: var(--accent-primary);">Send me a message</h3>
+                <div class="form-group">
+                    <label for="name">Name *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject *</label>
+                    <input type="text" id="subject" name="subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message *</label>
+                    <textarea id="message" name="message" required placeholder="Tell me about your project or how I can help you..."></textarea>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                    <a href="https://kamal.cal.com" target="_blank" class="btn btn-secondary">Schedule Call</a>
+                </div>
+            </form>
         </div>
     </section>
 
@@ -889,6 +1106,40 @@
         document.addEventListener('DOMContentLoaded', () => {
             const themeToggle = document.getElementById('themeToggle');
             themeToggle.addEventListener('click', toggleTheme);
+
+            // Experience expand/collapse functionality
+            window.toggleExperience = function(element) {
+                const details = element.querySelector('.timeline-details');
+                const indicator = element.querySelector('.expand-indicator');
+                
+                details.classList.toggle('expanded');
+                indicator.classList.toggle('expanded');
+            };
+
+            // Contact form submission
+            const contactForm = document.getElementById('contactForm');
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form data
+                const formData = new FormData(this);
+                const name = formData.get('name');
+                const email = formData.get('email');
+                const subject = formData.get('subject');
+                const message = formData.get('message');
+                
+                // Create mailto link
+                const mailtoLink = `mailto:kamal.devops@outlook.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
+                
+                // Open email client
+                window.location.href = mailtoLink;
+                
+                // Show success message
+                alert('Thank you for your message! Your email client should open now.');
+                
+                // Reset form
+                this.reset();
+            });
         });
 
         // Intersection Observer for animations
