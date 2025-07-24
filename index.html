@@ -1,1003 +1,199 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kamal Kumar - Lead Cloud Platform Engineer</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: #f8f9fa;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }
-        
-        /* Print Styles */
-        @media print {
-            body {
-                background: white;
-                font-size: 11px;
-                line-height: 1.4;
-            }
-            .container {
-                box-shadow: none;
-                max-width: 100%;
-                margin: 0;
-            }
-            .header {
-                background: #2c3e50 !important;
-                -webkit-print-color-adjust: exact;
-                color-adjust: exact;
-            }
-            .sidebar {
-                background: #34495e !important;
-                -webkit-print-color-adjust: exact;
-                color-adjust: exact;
-            }
-            .section-title {
-                color: #2c3e50 !important;
-                -webkit-print-color-adjust: exact;
-                color-adjust: exact;
-            }
-            .skill-bar::after {
-                background: #3498db !important;
-                -webkit-print-color-adjust: exact;
-                color-adjust: exact;
-            }
-            .contact-item i {
-                color: #3498db !important;
-                -webkit-print-color-adjust: exact;
-                color-adjust: exact;
-            }
-            .cert-badge {
-                background: #e8f4fd !important;
-                border: 1px solid #3498db !important;
-                -webkit-print-color-adjust: exact;
-                color-adjust: exact;
-            }
-            .achievement-item::before {
-                background: #3498db !important;
-                -webkit-print-color-adjust: exact;
-                color-adjust: exact;
-            }
-            .project-tag {
-                background: #e8f4fd !important;
-                color: #2c3e50 !important;
-                -webkit-print-color-adjust: exact;
-                color-adjust: exact;
-            }
-            .hide-mobile {
-                display: block !important;
-            }
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #2c3e50, #34495e);
-            color: white;
-            padding: 40px;
-            text-align: center;
-        }
-        
-        .header h1 {
-            font-size: 2.5em;
-            font-weight: 700;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .header .subtitle {
-            font-size: 1.2em;
-            opacity: 0.9;
-            margin-bottom: 20px;
-        }
-        
-        .header .summary {
-            max-width: 800px;
-            margin: 0 auto;
-            font-size: 1.1em;
-            line-height: 1.8;
-            opacity: 0.95;
-        }
-        
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 0;
-        }
-        
-        .sidebar {
-            background: #34495e;
-            color: white;
-            padding: 40px 30px;
-        }
-        
-        .content {
-            padding: 40px;
-        }
-        
-        .section {
-            margin-bottom: 40px;
-        }
-        
-        .section-title {
-            color: #2c3e50;
-            font-size: 1.5em;
-            font-weight: 600;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #3498db;
-            position: relative;
-        }
-        
-        .sidebar .section-title {
-            color: white;
-            border-bottom-color: #3498db;
-        }
-        
-        .contact-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            padding: 8px 0;
-        }
-        
-        .contact-item i {
-            color: #3498db;
-            width: 20px;
-            margin-right: 15px;
-            font-size: 1.1em;
-        }
-        
-        .contact-item a {
-            color: white;
-            text-decoration: none;
-        }
-        
-        .contact-item a:hover {
-            color: #3498db;
-        }
-        
-        .skill-category {
-            margin-bottom: 25px;
-        }
-        
-        .skill-category h4 {
-            color: #3498db;
-            margin-bottom: 12px;
-            font-size: 1.1em;
-        }
-        
-        .skill-item {
-            margin-bottom: 8px;
-            padding: 5px 0;
-        }
-        
-        .skill-bar {
-            background: rgba(255,255,255,0.2);
-            height: 6px;
-            border-radius: 3px;
-            position: relative;
-            margin-top: 5px;
-        }
-        
-        .skill-bar::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            background: #3498db;
-            border-radius: 3px;
-        }
-        
-        .skill-expert::after { width: 95%; }
-        .skill-advanced::after { width: 85%; }
-        .skill-intermediate::after { width: 75%; }
-        
-        .experience-item {
-            border-left: 3px solid #3498db;
-            padding-left: 25px;
-            margin-bottom: 35px;
-            position: relative;
-        }
-        
-        .experience-item::before {
-            content: '';
-            position: absolute;
-            left: -8px;
-            top: 0;
-            width: 13px;
-            height: 13px;
-            background: #3498db;
-            border-radius: 50%;
-        }
-        
-        .job-title {
-            font-size: 1.2em;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 5px;
-        }
-        
-        .company {
-            font-weight: 500;
-            color: #3498db;
-            margin-bottom: 5px;
-        }
-        
-        .period {
-            color: #666;
-            font-size: 0.9em;
-            margin-bottom: 15px;
-        }
-        
-        .achievements {
-            list-style: none;
-        }
-        
-        .achievements li {
-            margin-bottom: 8px;
-            padding-left: 20px;
-            position: relative;
-        }
-        
-        .achievements li::before {
-            content: '▶';
-            position: absolute;
-            left: 0;
-            color: #3498db;
-            font-size: 0.8em;
-        }
-        
-        .cert-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-        
-        .cert-item {
-            background: rgba(255,255,255,0.1);
-            padding: 12px;
-            border-radius: 8px;
-            border-left: 4px solid #3498db;
-        }
-        
-        .cert-name {
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        
-        .cert-issuer {
-            font-size: 0.9em;
-            opacity: 0.8;
-            margin-bottom: 3px;
-        }
-        
-        .cert-year {
-            font-size: 0.8em;
-            opacity: 0.7;
-        }
-        
-        .education-item {
-            background: rgba(255,255,255,0.1);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-        
-        .achievement-item {
-            border-left: 3px solid #3498db;
-            padding-left: 20px;
-            margin-bottom: 20px;
-            position: relative;
-        }
-        
-        .achievement-item::before {
-            content: '★';
-            position: absolute;
-            left: -8px;
-            top: 2px;
-            color: #3498db;
-            background: white;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-        }
-        
-        .achievement-title {
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 5px;
-        }
-        
-        .project-item {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            border-left: 4px solid #3498db;
-            transition: transform 0.2s ease;
-        }
-        
-        .project-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        .project-title {
-            font-size: 1.2em;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-        
-        .project-description {
-            margin-bottom: 15px;
-            line-height: 1.6;
-        }
-        
-        .project-tech {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-        
-        .project-tag {
-            background: #e8f4fd;
-            color: #2c3e50;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.85em;
-            font-weight: 500;
-        }
-        
-        .project-metrics {
-            font-weight: 500;
-            color: #27ae60;
-        }
-        
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .header h1 {
-                font-size: 2em;
-            }
-            
-            .header, .sidebar, .content {
-                padding: 25px 20px;
-            }
-            
-            .hide-mobile {
-                display: none;
-            }
-            
-            .project-tech {
-                justify-content: flex-start;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .header h1 {
-                font-size: 1.7em;
-            }
-            
-            .header .summary {
-                font-size: 1em;
-            }
-            
-            .section-title {
-                font-size: 1.3em;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>Kamal Kumar</h1>
-            <div class="subtitle">Lead Cloud Platform Engineer | Lead DevOps Engineer</div>
-            <div class="summary">
-                Cloud Migration/DevOps Lead with 8+ years architecting enterprise Azure solutions and driving digital transformations. 
-                Delivered $1.4M+ cost savings, secured 99.99% system reliability, and mentored 15+ engineers. Expert in Terraform IaC, 
-                Kubernetes orchestration, GitOps pipelines, and zero-trust security. Successfully scaled infrastructure for 100K+ users 
-                ensuring compliance.
-            </div>
-        </div>
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kamal Kumar | Cloud & DevOps Resume</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #000000;
+      --accent: #0078d4;
+      --muted: #6b7280;
+    }[data-theme="dark"] {
+  --bg: #111827;
+  --fg: #f9fafb;
+  --accent: #3b82f6;
+  --muted: #9ca3af;
+}
 
-        <div class="main-content">
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <!-- Contact Information -->
-                <div class="section">
-                    <h2 class="section-title">Contact</h2>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Civil Lines, Delhi - IN</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <span>+91 88005 50044</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <a href="mailto:kamal.devops@outlook.com">kamal.devops@outlook.com</a>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fab fa-linkedin"></i>
-                        <a href="#">LinkedIn Profile</a>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-globe"></i>
-                        <a href="#">Portfolio</a>
-                    </div>
-                </div>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-                <!-- Skills -->
-                <div class="section">
-                    <h2 class="section-title">Core Skills</h2>
-                    
-                    <div class="skill-category">
-                        <h4>Cloud Platforms</h4>
-                        <div class="skill-item">
-                            Microsoft Azure
-                            <div class="skill-bar skill-expert"></div>
-                        </div>
-                        <div class="skill-item">
-                            AWS (EC2, S3, RDS, Lambda)
-                            <div class="skill-bar skill-advanced"></div>
-                        </div>
-                        <div class="skill-item">
-                            Google Cloud Platform
-                            <div class="skill-bar skill-intermediate"></div>
-                        </div>
-                    </div>
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg);
+  color: var(--fg);
+  padding: 2rem;
+  line-height: 1.6;
+}
 
-                    <div class="skill-category">
-                        <h4>Containers & Orchestration</h4>
-                        <div class="skill-item">
-                            Kubernetes (CKA Certified)
-                            <div class="skill-bar skill-expert"></div>
-                        </div>
-                        <div class="skill-item">
-                            Docker & Containerd
-                            <div class="skill-bar skill-expert"></div>
-                        </div>
-                        <div class="skill-item">
-                            Azure Container Services
-                            <div class="skill-bar skill-expert"></div>
-                        </div>
-                        <div class="skill-item">
-                            Istio Service Mesh
-                            <div class="skill-bar skill-advanced"></div>
-                        </div>
-                    </div>
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 1rem;
+}
 
-                    <div class="skill-category">
-                        <h4>Infrastructure as Code</h4>
-                        <div class="skill-item">
-                            Terraform (HashiCorp Certified)
-                            <div class="skill-bar skill-expert"></div>
-                        </div>
-                        <div class="skill-item">
-                            ARM Templates & Bicep
-                            <div class="skill-bar skill-expert"></div>
-                        </div>
-                        <div class="skill-item">
-                            Ansible & Pulumi
-                            <div class="skill-bar skill-advanced"></div>
-                        </div>
-                    </div>
+.toggle-theme {
+  border: none;
+  background: var(--accent);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
-                    <div class="skill-category">
-                        <h4>DevOps & CI/CD</h4>
-                        <div class="skill-item">
-                            Azure DevOps (Expert)
-                            <div class="skill-bar skill-expert"></div>
-                        </div>
-                        <div class="skill-item">
-                            GitLab CI/CD & ArgoCD
-                            <div class="skill-bar skill-expert"></div>
-                        </div>
-                        <div class="skill-item">
-                            GitHub Actions & Jenkins
-                            <div class="skill-bar skill-advanced"></div>
-                        </div>
-                        <div class="skill-item">
-                            Helm Charts & Kustomize
-                            <div class="skill-bar skill-advanced"></div>
-                        </div>
-                    </div>
+.section {
+  margin-top: 2rem;
+}
 
-                    <div class="skill-category">
-                        <h4>Programming & Automation</h4>
-                        <div class="skill-item">
-                            Python & PowerShell
-                            <div class="skill-bar skill-expert"></div>
-                        </div>
-                        <div class="skill-item">
-                            Bash & Go
-                            <div class="skill-bar skill-advanced"></div>
-                        </div>
-                        <div class="skill-item">
-                            REST APIs & Azure CLI
-                            <div class="skill-bar skill-expert"></div>
-                        </div>
-                    </div>
+h1 {
+  font-size: 2rem;
+}
 
-                    <div class="skill-category">
-                        <h4>Monitoring & Security</h4>
-                        <div class="skill-item">
-                            Azure Monitor & Prometheus
-                            <div class="skill-bar skill-expert"></div>
-                        </div>
-                        <div class="skill-item">
-                            Zero Trust & RBAC
-                            <div class="skill-bar skill-expert"></div>
-                        </div>
-                        <div class="skill-item">
-                            Grafana & Datadog
-                            <div class="skill-bar skill-advanced"></div>
-                        </div>
-                    </div>
-                </div>
+h2 {
+  font-size: 1.5rem;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
 
-                <!-- Certifications -->
-                <div class="section">
-                    <h2 class="section-title">Certifications</h2>
-                    <div class="cert-grid">
-                        <div class="cert-item">
-                            <div class="cert-name">Azure DevOps Expert (AZ-400)</div>
-                            <div class="cert-issuer">Microsoft</div>
-                            <div class="cert-year">2024</div>
-                        </div>
-                        <div class="cert-item">
-                            <div class="cert-name">HashiCorp Terraform Associate</div>
-                            <div class="cert-issuer">HashiCorp</div>
-                            <div class="cert-year">2024</div>
-                        </div>
-                        <div class="cert-item">
-                            <div class="cert-name">Azure Security Engineer (AZ-500)</div>
-                            <div class="cert-issuer">Microsoft</div>
-                            <div class="cert-year">2023</div>
-                        </div>
-                        <div class="cert-item">
-                            <div class="cert-name">Azure Network Engineer (AZ-700)</div>
-                            <div class="cert-issuer">Microsoft</div>
-                            <div class="cert-year">2023</div>
-                        </div>
-                        <div class="cert-item">
-                            <div class="cert-name">Certified Kubernetes Admin (CKA)</div>
-                            <div class="cert-issuer">CNCF</div>
-                            <div class="cert-year">2023</div>
-                        </div>
-                        <div class="cert-item">
-                            <div class="cert-name">Azure Administrator (AZ-104)</div>
-                            <div class="cert-issuer">Microsoft</div>
-                            <div class="cert-year">2023</div>
-                        </div>
-                    </div>
-                </div>
+ul {
+  list-style: none;
+  padding-left: 1rem;
+}
 
-                <!-- Awards & Recognition -->
-                <div class="section">
-                    <h2 class="section-title">Awards & Recognition</h2>
-                    <div class="cert-grid">
-                        <div class="cert-item">
-                            <div class="cert-name">EPAM Excellence Award</div>
-                            <div class="cert-issuer">EPAM Systems</div>
-                            <div class="cert-year">2022, 2023, 2024</div>
-                        </div>
-                        <div class="cert-item">
-                            <div class="cert-name">Microsoft MVP Nominee</div>
-                            <div class="cert-issuer">Microsoft</div>
-                            <div class="cert-year">2024</div>
-                        </div>
-                        <div class="cert-item">
-                            <div class="cert-name">Cloud Innovation Award</div>
-                            <div class="cert-issuer">LSEG Technology</div>
-                            <div class="cert-year">2024</div>
-                        </div>
-                        <div class="cert-item">
-                            <div class="cert-name">DevOps Champion</div>
-                            <div class="cert-issuer">ITC Infotech</div>
-                            <div class="cert-year">2021</div>
-                        </div>
-                    </div>
-                </div>
+li::before {
+  content: '•';
+  color: var(--accent);
+  margin-right: 0.5rem;
+}
 
-                <!-- Professional Development -->
-                <div class="section">
-                    <h2 class="section-title">Professional Development</h2>
-                    <div class="cert-grid">
-                        <div class="cert-item">
-                            <div class="cert-name">Microsoft Certified Trainer</div>
-                            <div class="cert-issuer">Microsoft</div>
-                            <div class="cert-year">Active - 2023</div>
-                        </div>
-                        <div class="cert-item">
-                            <div class="cert-name">EPAM Certified Technical Interviewer</div>
-                            <div class="cert-issuer">EPAM Systems</div>
-                            <div class="cert-year">2023</div>
-                        </div>
-                        <div class="cert-item">
-                            <div class="cert-name">FinOps Certified Practitioner</div>
-                            <div class="cert-issuer">FinOps Foundation</div>
-                            <div class="cert-year">2024</div>
-                        </div>
-                        <div class="cert-item">
-                            <div class="cert-name">ITIL Foundation v4</div>
-                            <div class="cert-issuer">AXELOS</div>
-                            <div class="cert-year">2022</div>
-                        </div>
-                    </div>
-                </div>
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
 
-                <!-- Languages -->
-                <div class="section">
-                    <h2 class="section-title">Languages</h2>
-                    <div class="skill-item">
-                        English (Fluent)
-                        <div class="skill-bar skill-expert"></div>
-                    </div>
-                    <div class="skill-item">
-                        Hindi (Native)
-                        <div class="skill-bar skill-expert"></div>
-                    </div>
-                    <div class="skill-item">
-                        Punjabi (Conversational)
-                        <div class="skill-bar skill-intermediate"></div>
-                    </div>
-                </div>
+.card {
+  border: 1px solid var(--muted);
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: var(--bg);
+}
 
-                <!-- Education -->
-                <div class="section">
-                    <h2 class="section-title">Education</h2>
-                    <div class="education-item">
-                        <div class="cert-name">Master of Computer Applications</div>
-                        <div class="cert-issuer">Jain University, Bangalore</div>
-                        <div class="cert-year">2021-2023 | CGPA: 8.7</div>
-                    </div>
-                    <div class="education-item">
-                        <div class="cert-name">Bachelor of Computer Applications</div>
-                        <div class="cert-issuer">Sikkim Manipal University</div>
-                        <div class="cert-year">2013-2016 | CGPA: 6.3</div>
-                    </div>
-                </div>
-            </div>
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
 
-            <!-- Main Content -->
-            <div class="content">
-                <!-- Experience -->
-                <div class="section">
-                    <h2 class="section-title">Professional Experience</h2>
-                    
-                    <div class="experience-item">
-                        <div class="job-title">Cloud Migration & DevOps Lead</div>
-                        <div class="company">EPAM Systems</div>
-                        <div class="period">September 2024 - Present | Gurugram, Haryana</div>
-                        <ul class="achievements">
-                            <li><strong>Enterprise Migration:</strong> Spearheaded zero-downtime migration of 30-component Java/C++ monolith to AKS, serving 100K+ daily users with 99.99% uptime</li>
-                            <li><strong>Risk Reduction:</strong> Delivered 30+ POCs and technical assessments, reducing migration risk by 80% through comprehensive testing frameworks</li>
-                            <li><strong>Deployment Optimization:</strong> Engineered GitLab CI/CD pipelines with ArgoCD, reducing deployment time by 94% (4 hours → 15 minutes)</li>
-                            <li><strong>Team Leadership:</strong> Mentored 8 DevOps engineers, increasing team velocity by 40% and knowledge retention by 90%</li>
-                            <li><strong>Cost Engineering:</strong> Implemented FinOps practices and right-sizing strategies, saving $1.4M annually (25% reduction)</li>
-                            <li><strong>Cloud-Native Transformation:</strong> Led modernization of legacy applications using microservices architecture and containerization</li>
-                        </ul>
-                    </div>
+@media print {
+  body {
+    padding: 0;
+  }
+  .toggle-theme, nav {
+    display: none;
+  }
+  .card {
+    page-break-inside: avoid;
+  }
+}
 
-                    <div class="experience-item">
-                        <div class="job-title">Lead Cloud Platform Engineer</div>
-                        <div class="company">EPAM Systems</div>
-                        <div class="period">June 2022 - September 2024 | Gurugram, Haryana</div>
-                        <ul class="achievements">
-                            <li><strong>Platform Scaling:</strong> Onboarded 200+ applications across 15 business units with Azure Landing Zones and hub-spoke architecture</li>
-                            <li><strong>Automation Excellence:</strong> Built Terraform + Azure DevOps pipelines, cutting provisioning from 8h to 1.4h (70% improvement)</li>
-                            <li><strong>Security Hardening:</strong> Boosted security posture by 85% with Azure Policy and Zero Trust implementation</li>
-                            <li><strong>Template Standardization:</strong> Created 50+ IaC templates for AKS, Container Apps, and Functions with governance controls</li>
-                            <li><strong>Process Optimization:</strong> Established CI/CD standards, reducing onboarding from 3 weeks to 3 days (85% improvement)</li>
-                            <li><strong>Multi-Cloud Strategy:</strong> Designed hybrid cloud solutions integrating Azure with on-premises infrastructure</li>
-                        </ul>
-                    </div>
-
-                    <div class="experience-item">
-                        <div class="job-title">DevOps Engineer</div>
-                        <div class="company">ITC Infotech</div>
-                        <div class="period">October 2018 - June 2022 | Gurugram, Haryana</div>
-                        <ul class="achievements">
-                            <li><strong>Infrastructure Modules:</strong> Architected 50+ reusable Terraform modules across 15+ environments with version control</li>
-                            <li><strong>Process Automation:</strong> Automated 50+ workflows using Python/PowerShell, boosting productivity by 60%</li>
-                            <li><strong>CI/CD Implementation:</strong> Built 40+ Azure DevOps pipelines for Java applications (45% faster releases)</li>
-                            <li><strong>Security Enhancement:</strong> Added container scanning & vulnerability management, cutting security incidents by 40%</li>
-                            <li><strong>Compliance Management:</strong> Set up Azure Policy for 100+ regulatory requirements (SOC 2, GDPR)</li>
-                            <li><strong>Disaster Recovery:</strong> Implemented automated backup and recovery solutions with RTO < 4 hours</li>
-                        </ul>
-                    </div>
-
-                    <div class="experience-item">
-                        <div class="job-title">Systems Engineer</div>
-                        <div class="company">Collabera Technologies</div>
-                        <div class="period">April 2017 - October 2018 | New Delhi, India</div>
-                        <ul class="achievements">
-                            <li><strong>Infrastructure Management:</strong> Maintained 99.9% uptime across 200+ branch locations with proactive monitoring</li>
-                            <li><strong>Server Deployment:</strong> Provisioned 100+ hardened Windows/Linux servers with automated configuration</li>
-                            <li><strong>Business Continuity:</strong> Led infrastructure setup for 50+ new branches with standardized deployment processes</li>
-                            <li><strong>Performance Optimization:</strong> Improved system performance by 35% through resource optimization and tuning</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Key Projects -->
-                <div class="section">
-                    <h2 class="section-title">Key Projects</h2>
-                    
-                    <div class="project-item">
-                        <div class="project-title">Enterprise Cloud Migration to Azure Kubernetes Service</div>
-                        <div class="project-description">
-                            Led comprehensive migration of legacy monolithic applications to cloud-native AKS environment, serving 100K+ users with zero downtime. Implemented blue-green deployment strategies and automated rollback mechanisms.
-                        </div>
-                        <div class="project-tech">
-                            <span class="project-tag">Azure AKS</span>
-                            <span class="project-tag">Terraform</span>
-                            <span class="project-tag">GitLab CI/CD</span>
-                            <span class="project-tag">ArgoCD</span>
-                            <span class="project-tag">Helm</span>
-                            <span class="project-tag">Istio</span>
-                        </div>
-                        <div class="project-metrics">
-                            <strong>Impact:</strong> 94% deployment time reduction, 99.99% uptime, $1.4M annual cost savings
-                        </div>
-                    </div>
-
-                    <div class="project-item">
-                        <div class="project-title">Multi-Tenant Cloud Platform with Landing Zones</div>
-                        <div class="project-description">
-                            Designed and implemented scalable Azure Landing Zone architecture supporting 200+ applications across 15 business units. Established governance, security, and compliance frameworks with automated provisioning.
-                        </div>
-                        <div class="project-tech">
-                            <span class="project-tag">Azure Landing Zones</span>
-                            <span class="project-tag">Hub-Spoke Architecture</span>
-                            <span class="project-tag">Azure Policy</span>
-                            <span class="project-tag">RBAC</span>
-                            <span class="project-tag">Azure Firewall</span>
-                            <span class="project-tag">ExpressRoute</span>
-                        </div>
-                        <div class="project-metrics">
-                            <strong>Impact:</strong> 70% faster provisioning, 85% security improvement, 15 business units onboarded
-                        </div>
-                    </div>
-
-                    <div class="project-item">
-                        <div class="project-title">Zero Trust Security Implementation</div>
-                        <div class="project-description">
-                            Implemented comprehensive Zero Trust security model across cloud infrastructure with identity-based access controls, micro-segmentation, and continuous monitoring. Achieved SOC 2 and GDPR compliance.
-                        </div>
-                        <div class="project-tech">
-                            <span class="project-tag">Azure AD</span>
-                            <span class="project-tag">Conditional Access</span>
-                            <span class="project-tag">Key Vault</span>
-                            <span class="project-tag">Microsoft Defender</span>
-                            <span class="project-tag">Network Security Groups</span>
-                            <span class="project-tag">Azure Monitor</span>
-                        </div>
-                        <div class="project-metrics">
-                            <strong>Impact:</strong> 85% security posture improvement, 40% reduction in security incidents
-                        </div>
-                    </div>
-
-                    <div class="project-item">
-                        <div class="project-title">GitOps-based Continuous Deployment Pipeline</div>
-                        <div class="project-description">
-                            Built enterprise-grade GitOps pipeline using ArgoCD and Flux for automated application deployment across multiple environments. Implemented progressive delivery with canary and blue-green strategies.
-                        </div>
-                        <div class="project-tech">
-                            <span class="project-tag">ArgoCD</span>
-                            <span class="project-tag">Flux</span>
-                            <span class="project-tag">GitLab CI/CD</span>
-                            <span class="project-tag">Kustomize</span>
-                            <span class="project-tag">Prometheus</span>
-                            <span class="project-tag">Grafana</span>
-                        </div>
-                        <div class="project-metrics">
-                            <strong>Impact:</strong> 94% deployment time reduction, 90% rollback success rate, 40% team velocity increase
-                        </div>
-                    </div>
-
-                    <div class="project-item">
-                        <div class="project-title">Infrastructure as Code Standardization</div>
-                        <div class="project-description">
-                            Developed comprehensive library of 50+ reusable Terraform modules with built-in security controls and compliance checks. Established IaC governance with automated validation and testing frameworks.
-                        </div>
-                        <div class="project-tech">
-                            <span class="project-tag">Terraform</span>
-                            <span class="project-tag">Terragrunt</span>
-                            <span class="project-tag">Azure DevOps</span>
-                            <span class="project-tag">Terraform Cloud</span>
-                            <span class="project-tag">Azure Policy</span>
-                            <span class="project-tag">ARM Templates</span>
-                        </div>
-                        <div class="project-metrics">
-                            <strong>Impact:</strong> 70% faster infrastructure provisioning, 50+ reusable modules, 15+ environments standardized
-                        </div>
-                    </div>
-
-                    <div class="project-item">
-                        <div class="project-title">Cloud Cost Optimization & FinOps Implementation</div>
-                        <div class="project-description">
-                            Implemented comprehensive FinOps practices with automated cost monitoring, resource right-sizing, and budget alerts. Developed custom dashboards and automated remediation for cost anomalies.
-                        </div>
-                        <div class="project-tech">
-                            <span class="project-tag">Azure Cost Management</span>
-                            <span class="project-tag">Power BI</span>
-                            <span class="project-tag">Azure Advisor</span>
-                            <span class="project-tag">Logic Apps</span>
-                            <span class="project-tag">Python Scripts</span>
-                            <span class="project-tag">Grafana</span>
-                        </div>
-                        <div class="project-metrics">
-                            <strong>Impact:</strong> $1.4M annual savings (25% cost reduction), 60% faster cost reporting, automated alerts
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Key Achievements -->
-                <div class="section">
-                    <h2 class="section-title">Key Achievements</h2>
-                <div class="section">
-                    <h2 class="section-title">Publications & Speaking</h2>
-                    
-                    <div class="achievement-item">
-                        <div class="achievement-title">Technical Blog Contributions</div>
-                        <div>Published 12+ technical articles on Azure DevOps, Kubernetes, and Terraform best practices on EPAM's engineering blog and personal LinkedIn, reaching 10K+ readers monthly.</div>
-                    </div>
-
-                    <div class="achievement-item">
-                        <div class="achievement-title">Conference Speaker</div>
-                        <div>Delivered presentations at DevOps Delhi meetups and internal EPAM tech talks on "Zero-Downtime Kubernetes Deployments" and "FinOps in Cloud Migration".</div>
-                    </div>
-
-                    <div class="achievement-item">
-                        <div class="achievement-title">Open Source Contributions</div>
-                        <div>Active contributor to Terraform Azure provider and Kubernetes community projects. Maintained 5+ open-source Terraform modules with 500+ downloads.</div>
-                    </div>
-                </div>
-
-                <!-- Volunteer Experience -->
-                <div class="section">
-                    <h2 class="section-title">Community & Volunteer Work</h2>
-                    
-                    <div class="achievement-item">
-                        <div class="achievement-title">DevOps Community Delhi - Organizer</div>
-                        <div>Co-organized monthly DevOps meetups for 500+ professionals, arranged technical workshops, and mentored junior engineers in cloud technologies (2022-Present).</div>
-                    </div>
-
-                    <div class="achievement-item">
-                        <div class="achievement-title">Technical Mentor - NGO Partnership</div>
-                        <div>Volunteer mentor for underprivileged students learning cloud technologies through EPAM's social impact program, helped 20+ students transition to tech careers.</div>
-                    </div>
-                </div>
-                    
-                    <div class="achievement-item">
-                        <div class="achievement-title">$1.4M+ Cost Savings Achievement</div>
-                        <div>Strategic cloud optimization and FinOps implementation for multiple teams within LSEG, achieving 25% cost reduction through right-sizing, automated scaling, and resource optimization.</div>
-                    </div>
-
-                    <div class="achievement-item">
-                        <div class="achievement-title">99.99% System Reliability</div>
-                        <div>Achieved exceptional system reliability serving 100K+ users through robust monitoring, automated failover, and proactive incident management across enterprise cloud infrastructure.</div>
-                    </div>
-
-                    <div class="achievement-item">
-                        <div class="achievement-title">Team Development Excellence</div>
-                        <div>Mentored 15+ engineers with 90% achieving promotions and advanced certifications. Developed comprehensive training programs and knowledge sharing initiatives.</div>
-                    </div>
-
-                    <div class="achievement-item">
-                        <div class="achievement-title">Certified Technical Interviewer</div>
-                        <div>EPAM certified interviewer with 150+ successful technical interviews conducted. Contributed to talent acquisition and team building across multiple projects.</div>
-                    </div>
-
-                    <div class="achievement-item">
-                        <div class="achievement-title">Microsoft Certified Trainer</div>
-                        <div>Recognized by Microsoft as certified trainer, delivered 50+ internal training sessions within EPAM/LSEG on Azure technologies and cloud best practices.</div>
-                    </div>
-
-                    <div class="achievement-item">
-                        <div class="achievement-title">EPAM Excellence Award (3x)</div>
-                        <div>Triple recipient of EPAM Excellence Award for exceptional performance, innovation in cloud solutions, and outstanding contribution to client success.</div>
-                    </div>
-
-                    <div class="achievement-item">
-                        <div class="achievement-title">Patent Applications</div>
-                        <div>Co-authored 2 patent applications for "Automated Cloud Cost Optimization System" and "Zero-Trust Container Security Framework" currently under review by USPTO.</div>
-                    </div>
-
-                    <div class="achievement-item">
-                        <div class="achievement-title">Industry Recognition</div>
-                        <div>Featured in "Top 40 Under 40 Cloud Engineers in India" by CloudTech Magazine 2024. Recognized for innovative cloud migration strategies and cost optimization.</div>
-                    </div>
-
-                    <div class="achievement-item">
-                        <div class="achievement-title">Client Success Stories</div>
-                        <div>Led digital transformation for Fortune 500 client resulting in 99.99% uptime SLA achievement and $2M+ annual operational cost savings through cloud optimization.</div>
-                    </div>
-
-                <!-- Publications & Speaking -->
-                <div class="section">
-                    <h2 class="section-title">Publications & Speaking</h2>
-                    
-                    <div class="achievement-item">
-                        <div class="achievement-title">Technical Blog Contributions</div>
-                        <div>Published 12+ technical articles on Azure DevOps, Kubernetes, and Terraform best practices on EPAM's engineering blog and personal LinkedIn, reaching 10K+ readers monthly.</div>
-                    </div>
-
-                    <div class="achievement-item">
-                        <div class="achievement-title">Conference Speaker</div>
-                        <div>Delivered presentations at DevOps Delhi meetups and internal EPAM tech talks on "Zero-Downtime Kubernetes Deployments" and "FinOps in Cloud Migration".</div>
-                    </div>
-
-                    <div class="achievement-item">
-                        <div class="achievement-title">Open Source Contributions</div>
-                        <div>Active contributor to Terraform Azure provider and Kubernetes community projects. Maintained 5+ open-source Terraform modules with 500+ downloads.</div>
-                    </div>
-                </div>
-
-                <!-- Community & Volunteer Work -->
-                <div class="section">
-                    <h2 class="section-title">Community & Volunteer Work</h2>
-                    
-                    <div class="achievement-item">
-                        <div class="achievement-title">DevOps Community Delhi - Organizer</div>
-                        <div>Co-organized monthly DevOps meetups for 500+ professionals, arranged technical workshops, and mentored junior engineers in cloud technologies (2022-Present).</div>
-                    </div>
-
-                    <div class="achievement-item">
-                        <div class="achievement-title">Technical Mentor - NGO Partnership</div>
-                        <div>Volunteer mentor for underprivileged students learning cloud technologies through EPAM's social impact program, helped 20+ students transition to tech careers.</div>
-                    </div>
-                </div>
-                </div>
-
-                <!-- Additional Skills & Technologies -->
-                <div class="section hide-mobile">
-                    <h2 class="section-title">Additional Technologies</h2>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 0.9em;">
-                        <div>
-                            <strong>Databases:</strong> Azure SQL Database, PostgreSQL, CosmosDB, MongoDB, Redis<br>
-                            <strong>Message Queues:</strong> Azure Service Bus, Event Hubs, Apache Kafka, RabbitMQ<br>
-                            <strong>API Management:</strong> Azure API Management, Kong, Ambassador, Istio Gateway
-                        </div>
-                        <div>
-                            <strong>Observability:</strong> ELK Stack, Jaeger, OpenTelemetry, New Relic<br>
-                            <strong>Backup & DR:</strong> Azure Backup, Site Recovery, Veeam, Commvault<br>
-                            <strong>Compliance:</strong> SOC 2, GDPR, HIPAA, ISO 27001, PCI DSS
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  </style>
+</head><body>
+  <header>
+    <div>
+      <h1>Kamal Kumar</h1>
+      <p>Lead Cloud & DevOps Engineer</p>
+      <p>
+        <a href="mailto:kamal.devops@outlook.com">kamal.devops@outlook.com</a> | 
+        <a href="https://kamal.sh" target="_blank">Portfolio</a> | 
+        <a href="https://linkedin.com/in/kamal18" target="_blank">LinkedIn</a>
+      </p>
     </div>
-</body>
-</html>
+    <button class="toggle-theme" onclick="toggleTheme()">Toggle Theme</button>
+  </header>  <section class="section">
+    <h2>Summary</h2>
+    <p>
+      Cloud Migration/DevOps Lead with 8+ years architecting enterprise Azure solutions. Delivered $1.4M+ savings, 99.99% uptime, and mentored 15+ engineers. Expert in Terraform, AKS, ArgoCD, GitOps, and cloud security.
+    </p>
+  </section>  <section class="section">
+    <h2>Experience</h2>
+    <ul>
+      <li><strong>EPAM Systems</strong> – Cloud Migration & DevOps Lead (Sep 2024 – Present)</li>
+      <li><strong>EPAM Systems</strong> – Lead Cloud Platform Engineer (Jun 2022 – Sep 2024)</li>
+      <li><strong>ITC Infotech</strong> – DevOps Engineer (Oct 2018 – Jun 2022)</li>
+      <li><strong>Collabera Technologies</strong> – Systems Engineer (Apr 2017 – Oct 2018)</li>
+    </ul>
+  </section>  <section class="section">
+    <h2>Key Projects</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>AKS Migration of Monolith</h3>
+        <p>Led zero-downtime migration of 30-component app to AKS with GitLab CI/CD and ArgoCD. 94% deployment time savings.</p>
+      </div>
+      <div class="card">
+        <h3>Cloud Security Hardening</h3>
+        <p>Implemented Azure Policy, PIM, Defender, and Zero Trust for 200+ apps, achieving 85% security posture gain.</p>
+      </div>
+      <div class="card">
+        <h3>Multi-Region DR Automation</h3>
+        <p>Built DR automation using Terraform + Azure DevOps for 5 regions with RTO < 15 mins and RPO < 1 min.</p>
+      </div>
+      <div class="card">
+        <h3>GitOps CI/CD at Scale</h3>
+        <p>Developed GitOps-first pipeline with ArgoCD and Helm for 200+ services with RBAC-based deployment.</p>
+      </div>
+      <div class="card">
+        <h3>Enterprise Landing Zones</h3>
+        <p>Designed secure Azure Landing Zones with hub-spoke, NSGs, P2S/B2B VPNs, ExpressRoute, and App Gateway.</p>
+      </div>
+      <div class="card">
+        <h3>Cloud Cost Optimization</h3>
+        <p>Introduced FinOps practices saving $1.4M annually across compute, storage, and licensing SKUs.</p>
+      </div>
+    </div>
+  </section>  <section class="section">
+    <h2>Skills</h2>
+    <ul>
+      <li>Cloud: Azure, AKS, App Services, Functions</li>
+      <li>IaC: Terraform, Bicep, ARM, Pulumi</li>
+      <li>CI/CD: ADO, GitLab, GitHub Actions, ArgoCD</li>
+      <li>Security: Zero Trust, Defender, PIM, Azure Policy</li>
+      <li>Monitoring: Grafana, Prometheus, App Insights</li>
+      <li>Programming: Python, PowerShell, Bash, YAML</li>
+    </ul>
+  </section>  <section class="section">
+    <h2>Certifications</h2>
+    <ul>
+      <li>AZ-400, AZ-500, AZ-700, AZ-104, AZ-204</li>
+      <li>Terraform Associate – HashiCorp</li>
+      <li>Certified Kubernetes Administrator (CKA)</li>
+    </ul>
+  </section>  <section class="section">
+    <h2>Education</h2>
+    <ul>
+      <li>Master of Computer Applications – Jain University (2021–2023)</li>
+      <li>Bachelor of Computer Applications – SMU (2013–2016)</li>
+    </ul>
+  </section>  <section class="section">
+    <h2>Achievements</h2>
+    <ul>
+      <li>$1.4M+ cost savings with FinOps</li>
+      <li>Mentored 15+ engineers, 90% promoted</li>
+      <li>99.99% uptime with AKS, GitOps & SRE practices</li>
+      <li>EPAM Excellence Award – 3x</li>
+      <li>Certified Microsoft Trainer – 50+ internal sessions</li>
+    </ul>
+  </section>  <script>
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      document.documentElement.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+    }
+  </script></body></html>
