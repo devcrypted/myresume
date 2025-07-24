@@ -4,18 +4,20 @@
   <title>Kamal Kumar | Cloud & DevOps Resume</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #ffffff;
-      --fg: #000000;
-      --accent: #0078d4;
+      --fg: #1f2937;
+      --accent: #2563eb;
       --muted: #6b7280;
+      --card-bg: #f9fafb;
     }[data-theme="dark"] {
-  --bg: #111827;
-  --fg: #f9fafb;
-  --accent: #3b82f6;
-  --muted: #9ca3af;
+  --bg: #0f172a;
+  --fg: #f8fafc;
+  --accent: #60a5fa;
+  --muted: #94a3b8;
+  --card-bg: #1e293b;
 }
 
 * {
@@ -25,11 +27,10 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins', sans-serif;
   background-color: var(--bg);
   color: var(--fg);
   padding: 2rem;
-  line-height: 1.6;
 }
 
 header {
@@ -39,6 +40,7 @@ header {
   flex-wrap: wrap;
   border-bottom: 2px solid var(--accent);
   padding-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 .toggle-theme {
@@ -46,22 +48,34 @@ header {
   background: var(--accent);
   color: white;
   padding: 0.5rem 1rem;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
+  font-weight: 600;
 }
 
 .section {
-  margin-top: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 h1 {
-  font-size: 2rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
 }
 
 h2 {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   color: var(--accent);
-  margin-bottom: 0.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 0.5rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
 }
 
 ul {
@@ -72,25 +86,40 @@ ul {
 li::before {
   content: '•';
   color: var(--accent);
-  margin-right: 0.5rem;
+  margin-right: 0.6rem;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
 }
 
 .card {
-  border: 1px solid var(--muted);
-  border-radius: 8px;
-  padding: 1rem;
-  background-color: var(--bg);
+  background-color: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
 }
 
 a {
   color: var(--accent);
   text-decoration: none;
+  font-weight: 500;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+p {
+  margin-bottom: 0.7rem;
+  line-height: 1.6;
 }
 
 @media print {
@@ -112,8 +141,8 @@ a {
       <h1>Kamal Kumar</h1>
       <p>Lead Cloud & DevOps Engineer</p>
       <p>
-        <a href="mailto:kamal.devops@outlook.com">kamal.devops@outlook.com</a> | 
-        <a href="https://kamal.sh" target="_blank">Portfolio</a> | 
+        <a href="mailto:kamal.devops@outlook.com">kamal.devops@outlook.com</a> |
+        <a href="https://kamal.sh" target="_blank">Portfolio</a> |
         <a href="https://linkedin.com/in/kamal18" target="_blank">LinkedIn</a>
       </p>
     </div>
@@ -121,7 +150,7 @@ a {
   </header>  <section class="section">
     <h2>Summary</h2>
     <p>
-      Cloud Migration/DevOps Lead with 8+ years architecting enterprise Azure solutions. Delivered $1.4M+ savings, 99.99% uptime, and mentored 15+ engineers. Expert in Terraform, AKS, ArgoCD, GitOps, and cloud security.
+      Cloud Migration/DevOps Lead with 8+ years of experience in architecting scalable Azure platforms, modernizing infrastructure, and enforcing security-first designs. Proven success in saving $1.4M+, achieving 99.99% uptime, and leading high-performing teams.
     </p>
   </section>  <section class="section">
     <h2>Experience</h2>
@@ -136,45 +165,46 @@ a {
     <div class="grid">
       <div class="card">
         <h3>AKS Migration of Monolith</h3>
-        <p>Led zero-downtime migration of 30-component app to AKS with GitLab CI/CD and ArgoCD. 94% deployment time savings.</p>
+        <p>Migrated 30-component monolith app to AKS with zero downtime using GitLab CI/CD + ArgoCD. Reduced deploy times by 94%.</p>
       </div>
       <div class="card">
         <h3>Cloud Security Hardening</h3>
-        <p>Implemented Azure Policy, PIM, Defender, and Zero Trust for 200+ apps, achieving 85% security posture gain.</p>
+        <p>Implemented Zero Trust architecture, Azure Defender, PIM, and security baselines across 200+ apps improving audit score by 85%.</p>
       </div>
       <div class="card">
         <h3>Multi-Region DR Automation</h3>
-        <p>Built DR automation using Terraform + Azure DevOps for 5 regions with RTO < 15 mins and RPO < 1 min.</p>
+        <p>Designed DR with Terraform & Azure DevOps to support 5 regions with RTO < 15min and RPO < 1min. Production ready and tested quarterly.</p>
       </div>
       <div class="card">
         <h3>GitOps CI/CD at Scale</h3>
-        <p>Developed GitOps-first pipeline with ArgoCD and Helm for 200+ services with RBAC-based deployment.</p>
+        <p>Created reusable GitOps pipeline templates using Helm, Kustomize and ArgoCD. Used across 200+ services.</p>
       </div>
       <div class="card">
-        <h3>Enterprise Landing Zones</h3>
-        <p>Designed secure Azure Landing Zones with hub-spoke, NSGs, P2S/B2B VPNs, ExpressRoute, and App Gateway.</p>
+        <h3>Landing Zone Automation</h3>
+        <p>Delivered enterprise-ready Azure Landing Zones with hub-spoke, ExpressRoute, NSGs, and standardized policies.</p>
       </div>
       <div class="card">
-        <h3>Cloud Cost Optimization</h3>
-        <p>Introduced FinOps practices saving $1.4M annually across compute, storage, and licensing SKUs.</p>
+        <h3>FinOps Strategy</h3>
+        <p>Built cloud cost dashboards and alerts, conducted right-sizing and reservations. Saved $1.4M/year.</p>
       </div>
     </div>
   </section>  <section class="section">
     <h2>Skills</h2>
     <ul>
-      <li>Cloud: Azure, AKS, App Services, Functions</li>
+      <li>Cloud: Azure, AKS, Functions, App Services</li>
       <li>IaC: Terraform, Bicep, ARM, Pulumi</li>
-      <li>CI/CD: ADO, GitLab, GitHub Actions, ArgoCD</li>
-      <li>Security: Zero Trust, Defender, PIM, Azure Policy</li>
-      <li>Monitoring: Grafana, Prometheus, App Insights</li>
-      <li>Programming: Python, PowerShell, Bash, YAML</li>
+      <li>CI/CD: GitHub Actions, ADO, GitLab CI, ArgoCD</li>
+      <li>Security: Azure Policy, PIM, Defender, Key Vault</li>
+      <li>Monitoring: App Insights, Prometheus, Grafana</li>
+      <li>Languages: Python, Bash, PowerShell, YAML</li>
     </ul>
   </section>  <section class="section">
     <h2>Certifications</h2>
     <ul>
-      <li>AZ-400, AZ-500, AZ-700, AZ-104, AZ-204</li>
+      <li>Azure DevOps Expert (AZ-400)</li>
       <li>Terraform Associate – HashiCorp</li>
-      <li>Certified Kubernetes Administrator (CKA)</li>
+      <li>CKA – CNCF</li>
+      <li>AZ-104, AZ-204, AZ-500, AZ-700</li>
     </ul>
   </section>  <section class="section">
     <h2>Education</h2>
@@ -185,11 +215,11 @@ a {
   </section>  <section class="section">
     <h2>Achievements</h2>
     <ul>
-      <li>$1.4M+ cost savings with FinOps</li>
-      <li>Mentored 15+ engineers, 90% promoted</li>
-      <li>99.99% uptime with AKS, GitOps & SRE practices</li>
-      <li>EPAM Excellence Award – 3x</li>
-      <li>Certified Microsoft Trainer – 50+ internal sessions</li>
+      <li>Saved $1.4M with FinOps automation</li>
+      <li>Maintained 99.99% uptime on critical workloads</li>
+      <li>Mentored 15+ engineers to senior roles</li>
+      <li>Certified Microsoft Trainer, 50+ sessions</li>
+      <li>EPAM Excellence Award x3</li>
     </ul>
   </section>  <script>
     function toggleTheme() {
