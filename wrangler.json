@@ -1,0 +1,9 @@
+{
+  "name": "resume",
+  "type": "webpack",
+  "site": {
+    "bucket": "./",
+    "entry-point": "resume"
+  },
+  "compatibility_date": "2025-07-25"
+}
