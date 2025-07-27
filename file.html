@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silent MP3 Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .status {
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .success {
+            color: #28a745;
+        }
+        .error {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Silent MP3 Generator</h1>
+        <p>Click the button below to generate and download a 5-second silent MP3 file.</p>
+        
+        <button id="generateBtn" onclick="generateSilentMP3()">Generate Silent MP3</button>
+        
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        async function generateSilentMP3() {
+            const btn = document.getElementById('generateBtn');
+            const status = document.getElementById('status');
+            
+            btn.disabled = true;
+            status.textContent = 'Generating silent audio...';
+            status.className = 'status';
+            
+            try {
+                // Create audio context
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Create a 5-second buffer with silence
+                const duration = 5; // seconds
+                const sampleRate = audioContext.sampleRate;
+                const numberOfChannels = 2; // stereo
+                const length = sampleRate * duration;
+                
+                const audioBuffer = audioContext.createBuffer(numberOfChannels, length, sampleRate);
+                
+                // Fill with silence (zeros) - this is already the default, but being explicit
+                for (let channel = 0; channel < numberOfChannels; channel++) {
+                    const channelData = audioBuffer.getChannelData(channel);
+                    for (let i = 0; i < length; i++) {
+                        channelData[i] = 0; // silence
+                    }
+                }
+                
+                // Convert to WAV format first
+                const wavArrayBuffer = audioBufferToWav(audioBuffer);
+                
+                // Create blob and download
+                const blob = new Blob([wavArrayBuffer], { type: 'audio/wav' });
+                const url = URL.createObjectURL(blob);
+                
+                // Create download link
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'silent_5_seconds.wav';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
+                // Clean up
+                URL.revokeObjectURL(url);
+                
+                status.textContent = 'Silent audio file downloaded successfully!';
+                status.className = 'status success';
+                
+            } catch (error) {
+                console.error('Error generating audio:', error);
+                status.textContent = 'Error generating audio file.';
+                status.className = 'status error';
+            }
+            
+            btn.disabled = false;
+        }
+        
+        function audioBufferToWav(buffer) {
+            const length = buffer.length;
+            const numberOfChannels = buffer.numberOfChannels;
+            const sampleRate = buffer.sampleRate;
+            const arrayBuffer = new ArrayBuffer(44 + length * numberOfChannels * 2);
+            const view = new DataView(arrayBuffer);
+            
+            // WAV header
+            const writeString = (offset, string) => {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            };
+            
+            let offset = 0;
+            writeString(offset, 'RIFF'); offset += 4;
+            view.setUint32(offset, 36 + length * numberOfChannels * 2, true); offset += 4;
+            writeString(offset, 'WAVE'); offset += 4;
+            writeString(offset, 'fmt '); offset += 4;
+            view.setUint32(offset, 16, true); offset += 4; // PCM format
+            view.setUint16(offset, 1, true); offset += 2; // PCM
+            view.setUint16(offset, numberOfChannels, true); offset += 2;
+            view.setUint32(offset, sampleRate, true); offset += 4;
+            view.setUint32(offset, sampleRate * numberOfChannels * 2, true); offset += 4;
+            view.setUint16(offset, numberOfChannels * 2, true); offset += 2;
+            view.setUint16(offset, 16, true); offset += 2;
+            writeString(offset, 'data'); offset += 4;
+            view.setUint32(offset, length * numberOfChannels * 2, true); offset += 4;
+            
+            // Convert float samples to 16-bit PCM
+            const channels = [];
+            for (let i = 0; i < numberOfChannels; i++) {
+                channels.push(buffer.getChannelData(i));
+            }
+            
+            for (let i = 0; i < length; i++) {
+                for (let channel = 0; channel < numberOfChannels; channel++) {
+                    const sample = Math.max(-1, Math.min(1, channels[channel][i]));
+                    view.setInt16(offset, sample * 0x7FFF, true);
+                    offset += 2;
+                }
+            }
+            
+            return arrayBuffer;
+        }
+    </script>
+</body>
+</html>
