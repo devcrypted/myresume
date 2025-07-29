@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Timezone Comparator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+
+        .controls {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+        }
+
+        .input-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .input-container {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .country-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 15px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .country-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .suggestions-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-top: none;
+            border-radius: 0 0 15px 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .suggestion-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid #f3f4f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .suggestion-item:hover, .suggestion-item.highlighted {
+            background-color: #f7fafc;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-country {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .suggestion-timezones {
+            font-size: 0.85rem;
+            color: #718096;
+        }
+
+        .add-btn, .share-btn, .clear-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .share-btn {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(72, 187, 120, 0.3);
+        }
+
+        .clear-btn {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: white;
+        }
+
+        .clear-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(245, 101, 101, 0.3);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .selected-countries {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .country-tag {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .country-tag .remove {
+            cursor: pointer;
+            font-weight: bold;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .country-tag .remove:hover {
+            opacity: 1;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .timezone-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .timezone-card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timezone-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .timezone-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 30px -5px rgba(0,0,0,0.15), 0 15px 15px -5px rgba(0,0,0,0.08);
+        }
+
+        .country-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #2d3748;
+        }
+
+        .timezone-name {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .time-display {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #2d3748;
+            margin-bottom: 5px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .date-display {
+            font-size: 1rem;
+            color: #4a5568;
+            margin-bottom: 15px;
+        }
+
+        .dst-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .dst-active {
+            background: rgba(72, 187, 120, 0.1);
+            color: #38a169;
+        }
+
+        .dst-inactive {
+            background: rgba(160, 174, 192, 0.1);
+            color: #718096;
+        }
+
+        .offset-info {
+            font-size: 0.9rem;
+            color: #718096;
+            font-weight: 500;
+        }
+
+        .visual-scale {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            margin-bottom: 20px;
+        }
+
+        .scale-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            text-align: center;
+            color: #2d3748;
+        }
+
+        .time-scale {
+            position: relative;
+            height: 60px;
+            background: linear-gradient(90deg, #1a202c 0%, #2d3748 25%, #4a5568 50%, #718096 75%, #e2e8f0 100%);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .scale-markers {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .scale-marker {
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .timezone-indicators {
+            position: relative;
+            height: 40px;
+            margin-bottom: 15px;
+        }
+
+        .timezone-indicator {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 8px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            min-width: 60px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .timezone-indicator:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        .error-message {
+            background: rgba(245, 101, 101, 0.1);
+            color: #e53e3e;
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin: 10px 0;
+            border: 1px solid rgba(245, 101, 101, 0.2);
+            font-weight: 500;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e2e8f0;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            margin-top: 40px;
+            padding: 20px;
+        }
+
+                        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .input-section {
+                flex-direction: column;
+            }
+            
+            .input-container {
+                min-width: 100%;
+                margin-bottom: 15px;
+            }
+            
+            .button-group {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .timezone-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .time-display {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌍 Global Timezone Comparator</h1>
+            <p>Compare times across the world with live updates and visual scales</p>
+        </div>
+
+        <div class="controls">
+            <div class="input-section">
+                <div class="input-container">
+                    <input type="text" class="country-input" id="countryInput" placeholder="Enter country name (e.g., India, Canada, UK)" autocomplete="off">
+                    <div class="suggestions-dropdown" id="suggestionsDropdown"></div>
+                </div>
+                <div class="button-group">
+                    <button class="add-btn" onclick="addCountry()">Add Country</button>
+                    <button class="share-btn" onclick="shareURL()">Share Link</button>
+                    <button class="clear-btn" onclick="clearAll()">Clear All</button>
+                </div>
+            </div>
+            <div class="selected-countries" id="selectedCountries"></div>
+        </div>
+
+        <div class="visual-scale" id="visualScale" style="display: none;">
+            <h3 class="scale-title">📊 Time Comparison Scale</h3>
+            <div class="time-scale">
+                <div class="scale-markers">
+                    <span class="scale-marker">00:00</span>
+                    <span class="scale-marker">06:00</span>
+                    <span class="scale-marker">12:00</span>
+                    <span class="scale-marker">18:00</span>
+                    <span class="scale-marker">24:00</span>
+                </div>
+            </div>
+            <div class="timezone-indicators" id="timezoneIndicators"></div>
+        </div>
+
+        <div class="timezone-grid" id="timezoneGrid"></div>
+
+        <div class="footer">
+            <p>Times update every second • Automatically handles daylight saving time • Share your comparisons with custom URLs</p>
+        </div>
+    </div>
+
+    <script>
+        class TimezoneComparator {
+            constructor() {
+                this.countries = new Set();
+                this.timezones = new Map();
+                this.updateInterval = null;
+                this.selectedSuggestionIndex = -1;
+                this.filteredSuggestions = [];
+                this.colors = [
+                    '#667eea', '#764ba2', '#f093fb', '#f5576c',
+                    '#4facfe', '#00f2fe', '#43e97b', '#38f9d7',
+                    '#ffecd2', '#fcb69f', '#a8edea', '#fed6e3',
+                    '#ff9a9e', '#fecfef', '#ffeef8', '#c471f5'
+                ];
+                
+                this.countryTimezoneMap = {
+                    'india': ['Asia/Kolkata'],
+                    'canada': ['Pacific/Vancouver', 'America/Edmonton', 'America/Winnipeg', 'America/Toronto', 'America/Halifax', 'America/St_Johns'],
+                    'uk': ['Europe/London'],
+                    'united kingdom': ['Europe/London'],
+                    'us': ['Pacific/Honolulu', 'America/Anchorage', 'America/Los_Angeles', 'America/Denver', 'America/Chicago', 'America/New_York'],
+                    'usa': ['Pacific/Honolulu', 'America/Anchorage', 'America/Los_Angeles', 'America/Denver', 'America/Chicago', 'America/New_York'],
+                    'united states': ['Pacific/Honolulu', 'America/Anchorage', 'America/Los_Angeles', 'America/Denver', 'America/Chicago', 'America/New_York'],
+                    'germany': ['Europe/Berlin'],
+                    'china': ['Asia/Shanghai'],
+                    'japan': ['Asia/Tokyo'],
+                    'australia': ['Australia/Perth', 'Australia/Darwin', 'Australia/Adelaide', 'Australia/Brisbane', 'Australia/Sydney'],
+                    'brazil': ['America/Rio_Branco', 'America/Manaus', 'America/Cuiaba', 'America/Sao_Paulo'],
+                    'russia': ['Europe/Kaliningrad', 'Europe/Moscow', 'Asia/Yekaterinburg', 'Asia/Omsk', 'Asia/Krasnoyarsk', 'Asia/Irkutsk', 'Asia/Yakutsk', 'Asia/Vladivostok', 'Asia/Magadan', 'Asia/Kamchatka'],
+                    'france': ['Europe/Paris'],
+                    'italy': ['Europe/Rome'],
+                    'spain': ['Europe/Madrid'],
+                    'mexico': ['America/Tijuana', 'America/Mazatlan', 'America/Mexico_City'],
+                    'argentina': ['America/Argentina/Buenos_Aires'],
+                    'south africa': ['Africa/Johannesburg'],
+                    'egypt': ['Africa/Cairo'],
+                    'turkey': ['Europe/Istanbul'],
+                    'thailand': ['Asia/Bangkok'],
+                    'singapore': ['Asia/Singapore'],
+                    'malaysia': ['Asia/Kuala_Lumpur'],
+                    'indonesia': ['Asia/Jakarta', 'Asia/Makassar', 'Asia/Jayapura'],
+                    'south korea': ['Asia/Seoul'],
+                    'philippines': ['Asia/Manila'],
+                    'vietnam': ['Asia/Ho_Chi_Minh'],
+                    'nepal': ['Asia/Kathmandu'],
+                    'pakistan': ['Asia/Karachi'],
+                    'bangladesh': ['Asia/Dhaka'],
+                    'sri lanka': ['Asia/Colombo'],
+                    'afghanistan': ['Asia/Kabul'],
+                    'iran': ['Asia/Tehran'],
+                    'iraq': ['Asia/Baghdad'],
+                    'saudi arabia': ['Asia/Riyadh'],
+                    'uae': ['Asia/Dubai'],
+                    'israel': ['Asia/Jerusalem'],
+                    'norway': ['Europe/Oslo'],
+                    'sweden': ['Europe/Stockholm'],
+                    'finland': ['Europe/Helsinki'],
+                    'denmark': ['Europe/Copenhagen'],
+                    'netherlands': ['Europe/Amsterdam'],
+                    'belgium': ['Europe/Brussels'],
+                    'switzerland': ['Europe/Zurich'],
+                    'austria': ['Europe/Vienna'],
+                    'portugal': ['Europe/Lisbon'],
+                    'greece': ['Europe/Athens'],
+                    'poland': ['Europe/Warsaw'],
+                    'czech republic': ['Europe/Prague'],
+                    'hungary': ['Europe/Budapest'],
+                    'romania': ['Europe/Bucharest'],
+                    'ukraine': ['Europe/Kiev'],
+                    'belarus': ['Europe/Minsk'],
+                    'lithuania': ['Europe/Vilnius'],
+                    'latvia': ['Europe/Riga'],
+                    'estonia': ['Europe/Tallinn'],
+                    'kenya': ['Africa/Nairobi'],
+                    'nigeria': ['Africa/Lagos'],
+                    'morocco': ['Africa/Casablanca'],
+                    'algeria': ['Africa/Algiers'],
+                    'tunisia': ['Africa/Tunis'],
+                    'libya': ['Africa/Tripoli'],
+                    'sudan': ['Africa/Khartoum'],
+                    'ethiopia': ['Africa/Addis_Ababa'],
+                    'ghana': ['Africa/Accra'],
+                    'ivory coast': ['Africa/Abidjan'],
+                    'senegal': ['Africa/Dakar'],
+                    'mali': ['Africa/Bamako'],
+                    'burkina faso': ['Africa/Ouagadougou'],
+                    'niger': ['Africa/Niamey'],
+                    'chad': ['Africa/Ndjamena'],
+                    'cameroon': ['Africa/Douala'],
+                    'central african republic': ['Africa/Bangui'],
+                    'democratic republic of congo': ['Africa/Kinshasa', 'Africa/Lubumbashi'],
+                    'republic of congo': ['Africa/Brazzaville'],
+                    'gabon': ['Africa/Libreville'],
+                    'equatorial guinea': ['Africa/Malabo'],
+                    'zambia': ['Africa/Lusaka'],
+                    'zimbabwe': ['Africa/Harare'],
+                    'botswana': ['Africa/Gaborone'],
+                    'namibia': ['Africa/Windhoek'],
+                    'madagascar': ['Indian/Antananarivo'],
+                    'mauritius': ['Indian/Mauritius'],
+                    'seychelles': ['Indian/Mahe'],
+                    'new zealand': ['Pacific/Auckland', 'Pacific/Chatham'],
+                    'fiji': ['Pacific/Fiji'],
+                    'papua new guinea': ['Pacific/Port_Moresby'],
+                    'solomon islands': ['Pacific/Guadalcanal'],
+                    'vanuatu': ['Pacific/Efate'],
+                    'new caledonia': ['Pacific/Noumea'],
+                    'samoa': ['Pacific/Apia'],
+                    'tonga': ['Pacific/Tongatapu'],
+                    'kiribati': ['Pacific/Tarawa', 'Pacific/Enderbury', 'Pacific/Kiritimati'],
+                    'marshall islands': ['Pacific/Majuro', 'Pacific/Kwajalein'],
+                    'micronesia': ['Pacific/Chuuk', 'Pacific/Pohnpei', 'Pacific/Kosrae'],
+                    'palau': ['Pacific/Palau'],
+                    'nauru': ['Pacific/Nauru'],
+                    'tuvalu': ['Pacific/Funafuti'],
+                    'cook islands': ['Pacific/Rarotonga'],
+                    'french polynesia': ['Pacific/Tahiti', 'Pacific/Marquesas', 'Pacific/Gambier'],
+                    'chile': ['America/Santiago', 'Pacific/Easter'],
+                    'peru': ['America/Lima'],
+                    'ecuador': ['America/Guayaquil', 'Pacific/Galapagos'],
+                    'colombia': ['America/Bogota'],
+                    'venezuela': ['America/Caracas'],
+                    'guyana': ['America/Guyana'],
+                    'suriname': ['America/Paramaribo'],
+                    'french guiana': ['America/Cayenne'],
+                    'uruguay': ['America/Montevideo'],
+                    'paraguay': ['America/Asuncion'],
+                    'bolivia': ['America/La_Paz']
+                };
+
+                this.loadFromURL();
+                this.setupEventListeners();
+                this.startUpdating();
+            }
+
+            setupEventListeners() {
+                const input = document.getElementById('countryInput');
+                const dropdown = document.getElementById('suggestionsDropdown');
+
+                input.addEventListener('input', (e) => {
+                    this.handleInput(e.target.value);
+                });
+
+                input.addEventListener('keydown', (e) => {
+                    this.handleKeyDown(e);
+                });
+
+                input.addEventListener('blur', () => {
+                    // Delay hiding dropdown to allow click on suggestions
+                    setTimeout(() => {
+                        this.hideSuggestions();
+                    }, 150);
+                });
+
+                input.addEventListener('focus', () => {
+                    if (input.value.trim()) {
+                        this.handleInput(input.value);
+                    }
+                });
+
+                // Click outside to close dropdown
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.input-container')) {
+                        this.hideSuggestions();
+                    }
+                });
+            }
+
+            handleInput(value) {
+                const query = value.trim().toLowerCase();
+                
+                if (query.length === 0) {
+                    this.hideSuggestions();
+                    return;
+                }
+
+                this.filteredSuggestions = Object.keys(this.countryTimezoneMap)
+                    .filter(country => 
+                        country.includes(query) && !this.countries.has(country)
+                    )
+                    .sort((a, b) => {
+                        // Prioritize exact matches and matches at the beginning
+                        const aStartsWith = a.startsWith(query);
+                        const bStartsWith = b.startsWith(query);
+                        
+                        if (aStartsWith && !bStartsWith) return -1;
+                        if (!aStartsWith && bStartsWith) return 1;
+                        
+                        return a.localeCompare(b);
+                    })
+                    .slice(0, 8); // Limit to 8 suggestions
+
+                this.selectedSuggestionIndex = -1;
+                this.showSuggestions();
+            }
+
+            handleKeyDown(e) {
+                const dropdown = document.getElementById('suggestionsDropdown');
+                
+                if (dropdown.style.display === 'none' || this.filteredSuggestions.length === 0) {
+                    if (e.key === 'Enter') {
+                        this.addCountry();
+                    }
+                    return;
+                }
+
+                switch (e.key) {
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        this.selectedSuggestionIndex = Math.min(
+                            this.selectedSuggestionIndex + 1,
+                            this.filteredSuggestions.length - 1
+                        );
+                        this.updateSuggestionHighlight();
+                        break;
+                    
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        this.selectedSuggestionIndex = Math.max(this.selectedSuggestionIndex - 1, -1);
+                        this.updateSuggestionHighlight();
+                        break;
+                    
+                    case 'Enter':
+                        e.preventDefault();
+                        if (this.selectedSuggestionIndex >= 0) {
+                            this.selectSuggestion(this.filteredSuggestions[this.selectedSuggestionIndex]);
+                        } else {
+                            this.addCountry();
+                        }
+                        break;
+                    
+                    case 'Escape':
+                        this.hideSuggestions();
+                        break;
+                }
+            }
+
+            showSuggestions() {
+                const dropdown = document.getElementById('suggestionsDropdown');
+                
+                if (this.filteredSuggestions.length === 0) {
+                    this.hideSuggestions();
+                    return;
+                }
+
+                dropdown.innerHTML = '';
+                
+                this.filteredSuggestions.forEach((country, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'suggestion-item';
+                    item.innerHTML = `
+                        <span class="suggestion-country">${this.capitalizeCountry(country)}</span>
+                        <span class="suggestion-timezones">${this.countryTimezoneMap[country].length} timezone${this.countryTimezoneMap[country].length > 1 ? 's' : ''}</span>
+                    `;
+                    
+                    item.addEventListener('click', () => {
+                        this.selectSuggestion(country);
+                    });
+                    
+                    dropdown.appendChild(item);
+                });
+
+                dropdown.style.display = 'block';
+            }
+
+            hideSuggestions() {
+                const dropdown = document.getElementById('suggestionsDropdown');
+                dropdown.style.display = 'none';
+                this.selectedSuggestionIndex = -1;
+            }
+
+            updateSuggestionHighlight() {
+                const dropdown = document.getElementById('suggestionsDropdown');
+                const items = dropdown.querySelectorAll('.suggestion-item');
+                
+                items.forEach((item, index) => {
+                    if (index === this.selectedSuggestionIndex) {
+                        item.classList.add('highlighted');
+                    } else {
+                        item.classList.remove('highlighted');
+                    }
+                });
+            }
+
+            selectSuggestion(country) {
+                const input = document.getElementById('countryInput');
+                input.value = this.capitalizeCountry(country);
+                this.hideSuggestions();
+                this.addCountryByName(country);
+            }
+
+            loadFromURL() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const countriesParam = urlParams.get('countries');
+                
+                if (countriesParam) {
+                    const countryList = countriesParam.split(',').map(c => c.trim().toLowerCase());
+                    countryList.forEach(country => {
+                        if (this.countryTimezoneMap[country]) {
+                            this.countries.add(country);
+                        }
+                    });
+                } else {
+                    // Default countries
+                    ['india', 'canada', 'uk', 'us', 'germany', 'china'].forEach(country => {
+                        this.countries.add(country);
+                    });
+                }
+                
+                this.updateDisplay();
+            }
+
+            addCountry() {
+                const input = document.getElementById('countryInput');
+                const country = input.value.trim().toLowerCase();
+                
+                if (!country) {
+                    this.showError('Please enter a country name');
+                    return;
+                }
+
+                this.addCountryByName(country);
+            }
+
+            addCountryByName(country) {
+                const input = document.getElementById('countryInput');
+                
+                if (this.countries.has(country)) {
+                    this.showError(`${this.capitalizeCountry(country)} is already added`);
+                    input.value = '';
+                    return;
+                }
+
+                if (this.countryTimezoneMap[country]) {
+                    this.countries.add(country);
+                    input.value = '';
+                    this.updateDisplay();
+                    this.clearError();
+                    this.hideSuggestions();
+                } else {
+                    // Try to find similar countries
+                    const similarCountries = Object.keys(this.countryTimezoneMap)
+                        .filter(c => c.includes(country.substring(0, 3)))
+                        .slice(0, 3)
+                        .map(c => this.capitalizeCountry(c));
+                    
+                    let errorMessage = `Country "${input.value}" not found.`;
+                    if (similarCountries.length > 0) {
+                        errorMessage += ` Did you mean: ${similarCountries.join(', ')}?`;
+                    } else {
+                        errorMessage += ' Try countries like India, Canada, UK, US, Germany, etc.';
+                    }
+                    
+                    this.showError(errorMessage);
+                }
+            }
+
+            removeCountry(country) {
+                this.countries.delete(country);
+                this.updateDisplay();
+            }
+
+            clearAll() {
+                this.countries.clear();
+                this.updateDisplay();
+            }
+
+            showError(message) {
+                const existingError = document.querySelector('.error-message');
+                if (existingError) {
+                    existingError.remove();
+                }
+
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = message;
+                
+                const controls = document.querySelector('.controls');
+                controls.appendChild(errorDiv);
+
+                setTimeout(() => {
+                    if (errorDiv.parentNode) {
+                        errorDiv.remove();
+                    }
+                }, 5000);
+            }
+
+            clearError() {
+                const existingError = document.querySelector('.error-message');
+                if (existingError) {
+                    existingError.remove();
+                }
+            }
+
+            updateDisplay() {
+                this.updateSelectedCountries();
+                this.updateTimezones();
+                this.updateVisualScale();
+                this.updateURL();
+            }
+
+            updateSelectedCountries() {
+                const container = document.getElementById('selectedCountries');
+                container.innerHTML = '';
+
+                Array.from(this.countries).forEach(country => {
+                    const tag = document.createElement('div');
+                    tag.className = 'country-tag';
+                    tag.innerHTML = `
+                        ${this.capitalizeCountry(country)}
+                        <span class="remove" onclick="comparator.removeCountry('${country}')">×</span>
+                    `;
+                    container.appendChild(tag);
+                });
+            }
+
+            capitalizeCountry(country) {
+                return country.split(' ').map(word => 
+                    word.charAt(0).toUpperCase() + word.slice(1)
+                ).join(' ');
+            }
+
+            updateTimezones() {
+                const grid = document.getElementById('timezoneGrid');
+                grid.innerHTML = '';
+
+                this.timezones.clear();
+
+                Array.from(this.countries).forEach(country => {
+                    const timezones = this.countryTimezoneMap[country];
+                    timezones.forEach(timezone => {
+                        this.timezones.set(`${country}-${timezone}`, {
+                            country,
+                            timezone,
+                            element: this.createTimezoneCard(country, timezone)
+                        });
+                        grid.appendChild(this.timezones.get(`${country}-${timezone}`).element);
+                    });
+                });
+
+                if (this.countries.size === 0) {
+                    grid.innerHTML = '<div class="loading">Select countries to compare their timezones</div>';
+                }
+            }
+
+            createTimezoneCard(country, timezone) {
+                const card = document.createElement('div');
+                card.className = 'timezone-card';
+                
+                const timezoneName = this.getTimezoneDisplayName(timezone);
+                const countryName = this.capitalizeCountry(country);
+                
+                card.innerHTML = `
+                    <div class="country-name">${countryName}</div>
+                    <div class="timezone-name">${timezoneName}</div>
+                    <div class="time-display">--:--:--</div>
+                    <div class="date-display">Loading...</div>
+                    <div class="dst-indicator dst-inactive">
+                        <span>🕐</span>
+                        <span>Standard Time</span>
+                    </div>
+                    <div class="offset-info">UTC --:--</div>
+                `;
+
+                return card;
+            }
+
+            getTimezoneDisplayName(timezone) {
+                const parts = timezone.split('/');
+                let name = parts[parts.length - 1].replace(/_/g, ' ');
+                
+                const cityNames = {
+                    'Kolkata': 'Kolkata (IST)',
+                    'Vancouver': 'Vancouver (PST/PDT)',
+                    'Edmonton': 'Edmonton (MST/MDT)',
+                    'Winnipeg': 'Winnipeg (CST/CDT)',
+                    'Toronto': 'Toronto (EST/EDT)',
+                    'Halifax': 'Halifax (AST/ADT)',
+                    'St Johns': 'St. John\'s (NST/NDT)',
+                    'London': 'London (GMT/BST)',
+                    'Honolulu': 'Honolulu (HST)',
+                    'Anchorage': 'Anchorage (AKST/AKDT)',
+                    'Los Angeles': 'Los Angeles (PST/PDT)',
+                    'Denver': 'Denver (MST/MDT)',
+                    'Chicago': 'Chicago (CST/CDT)',
+                    'New York': 'New York (EST/EDT)',
+                    'Berlin': 'Berlin (CET/CEST)',
+                    'Shanghai': 'Shanghai (CST)',
+                    'Tokyo': 'Tokyo (JST)',
+                    'Sydney': 'Sydney (AEST/AEDT)',
+                    'Perth': 'Perth (AWST)',
+                    'Adelaide': 'Adelaide (ACST/ACDT)',
+                    'Brisbane': 'Brisbane (AEST)',
+                    'Darwin': 'Darwin (ACST)',
+                    'Moscow': 'Moscow (MSK)',
+                    'Paris': 'Paris (CET/CEST)',
+                    'Rome': 'Rome (CET/CEST)',
+                    'Madrid': 'Madrid (CET/CEST)',
+                    'Dubai': 'Dubai (GST)',
+                    'Singapore': 'Singapore (SGT)',
+                    'Seoul': 'Seoul (KST)',
+                    'Bangkok': 'Bangkok (ICT)',
+                    'Jakarta': 'Jakarta (WIB)',
+                    'Manila': 'Manila (PHT)',
+                    'Karachi': 'Karachi (PKT)',
+                    'Dhaka': 'Dhaka (BST)',
+                    'Kathmandu': 'Kathmandu (NPT)',
+                    'Colombo': 'Colombo (SLST)'
+                };
+
+                return cityNames[name] || name;
+            }
+
+            updateVisualScale() {
+                const visualScale = document.getElementById('visualScale');
+                const indicators = document.getElementById('timezoneIndicators');
+                
+                if (this.countries.size === 0) {
+                    visualScale.style.display = 'none';
+                    return;
+                }
+
+                visualScale.style.display = 'block';
+                indicators.innerHTML = '';
+
+                let colorIndex = 0;
+                Array.from(this.timezones.keys()).forEach(key => {
+                    const data = this.timezones.get(key);
+                    const now = new Date();
+                    const timeInZone = new Date(now.toLocaleString("en-US", {timeZone: data.timezone}));
+                    const hours = timeInZone.getHours();
+                    const minutes = timeInZone.getMinutes();
+                    
+                    const totalMinutes = hours * 60 + minutes;
+                    const percentage = (totalMinutes / 1440) * 100; // 1440 minutes in a day
+                    
+                    const indicator = document.createElement('div');
+                    indicator.className = 'timezone-indicator';
+                    indicator.style.left = `${Math.max(0, Math.min(95, percentage - 2.5))}%`;
+                    indicator.style.width = '5%';
+                    indicator.style.background = this.colors[colorIndex % this.colors.length];
+                    indicator.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+                    indicator.title = `${this.capitalizeCountry(data.country)} - ${this.getTimezoneDisplayName(data.timezone)}`;
+                    
+                    indicators.appendChild(indicator);
+                    colorIndex++;
+                });
+            }
+
+            updateTimes() {
+                this.timezones.forEach((data, key) => {
+                    const now = new Date();
+                    const timeInZone = new Date(now.toLocaleString("en-US", {timeZone: data.timezone}));
+                    
+                    // Get timezone offset
+                    const utcTime = new Date(now.getTime() + (now.getTimezoneOffset() * 60000));
+                    const timezoneTime = new Date(utcTime.toLocaleString("en-US", {timeZone: data.timezone}));
+                    const offsetMinutes = (timezoneTime.getTime() - utcTime.getTime()) / (1000 * 60);
+                    const offsetHours = Math.floor(Math.abs(offsetMinutes) / 60);
+                    const offsetMins = Math.abs(offsetMinutes) % 60;
+                    const offsetSign = offsetMinutes >= 0 ? '+' : '-';
+                    const offsetString = `UTC ${offsetSign}${String(offsetHours).padStart(2, '0')}:${String(offsetMins).padStart(2, '0')}`;
+                    
+                    // Check for daylight saving time
+                    const isDST = this.isDaylightSavingTime(data.timezone);
+                    
+                    // Update the card
+                    const timeDisplay = data.element.querySelector('.time-display');
+                    const dateDisplay = data.element.querySelector('.date-display');
+                    const dstIndicator = data.element.querySelector('.dst-indicator');
+                    const offsetInfo = data.element.querySelector('.offset-info');
+                    
+                    timeDisplay.textContent = timeInZone.toLocaleTimeString('en-US', {
+                        hour12: false,
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+                    
+                    dateDisplay.textContent = timeInZone.toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    
+                    // Update DST indicator
+                    if (isDST) {
+                        dstIndicator.className = 'dst-indicator dst-active';
+                        dstIndicator.innerHTML = '<span>☀️</span><span>Daylight Saving Time</span>';
+                    } else {
+                        dstIndicator.className = 'dst-indicator dst-inactive';
+                        dstIndicator.innerHTML = '<span>🕐</span><span>Standard Time</span>';
+                    }
+                    
+                    offsetInfo.textContent = offsetString;
+                });
+                
+                this.updateVisualScale();
+            }
+
+            isDaylightSavingTime(timezone) {
+                const now = new Date();
+                const jan = new Date(now.getFullYear(), 0, 1);
+                const jul = new Date(now.getFullYear(), 6, 1);
+                
+                const janOffset = new Date(jan.toLocaleString("en-US", {timeZone: timezone})).getTimezoneOffset();
+                const julOffset = new Date(jul.toLocaleString("en-US", {timeZone: timezone})).getTimezoneOffset();
+                const nowOffset = new Date(now.toLocaleString("en-US", {timeZone: timezone})).getTimezoneOffset();
+                
+                return Math.min(janOffset, julOffset) === nowOffset;
+            }
+
+            startUpdating() {
+                this.updateTimes();
+                this.updateInterval = setInterval(() => {
+                    this.updateTimes();
+                }, 1000);
+            }
+
+            shareURL() {
+                if (this.countries.size === 0) {
+                    this.showError('Add some countries first to share the comparison');
+                    return;
+                }
+                
+                const countries = Array.from(this.countries).join(',');
+                const url = `${window.location.origin}${window.location.pathname}?countries=${encodeURIComponent(countries)}`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Global Timezone Comparator',
+                        text: `Compare times across ${Array.from(this.countries).map(c => this.capitalizeCountry(c)).join(', ')}`,
+                        url: url
+                    });
+                } else {
+                    navigator.clipboard.writeText(url).then(() => {
+                        const shareBtn = document.querySelector('.share-btn');
+                        const originalText = shareBtn.textContent;
+                        shareBtn.textContent = '✅ Link Copied!';
+                        shareBtn.style.background = 'linear-gradient(135deg, #48bb78, #38a169)';
+                        
+                        setTimeout(() => {
+                            shareBtn.textContent = originalText;
+                            shareBtn.style.background = 'linear-gradient(135deg, #48bb78, #38a169)';
+                        }, 2000);
+                    }).catch(() => {
+                        prompt('Copy this link to share:', url);
+                    });
+                }
+            }
+
+            updateURL() {
+                if (this.countries.size > 0) {
+                    const countries = Array.from(this.countries).join(',');
+                    const newURL = `${window.location.pathname}?countries=${encodeURIComponent(countries)}`;
+                    history.replaceState(null, '', newURL);
+                } else {
+                    history.replaceState(null, '', window.location.pathname);
+                }
+            }
+        }
+
+        // Initialize the application
+        let comparator;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            comparator = new TimezoneComparator();
+        });
+
+        // Global functions for button clicks
+        function addCountry() {
+            comparator.addCountry();
+        }
+
+        function shareURL() {
+            comparator.shareURL();
+        }
+
+        function clearAll() {
+            comparator.clearAll();
+        }
+
+        // Handle browser back/forward
+        window.addEventListener('popstate', () => {
+            if (comparator) {
+                comparator.countries.clear();
+                comparator.loadFromURL();
+            }
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (comparator && comparator.updateInterval) {
+                clearInterval(comparator.updateInterval);
+            }
+        });
+    </script>
+</body>
+</html>
