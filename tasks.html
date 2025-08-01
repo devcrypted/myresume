@@ -357,18 +357,81 @@
         </div>
     </div>
 
-    <script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+    <script type="module">
+        import { createClient } from 'https://esm.sh/@libsql/client@0.5.6';
+
         class TaskManager {
             constructor() {
                 this.tasks = [];
                 this.currentId = 1;
                 this.editingId = null;
+                this.client = null;
                 this.init();
             }
 
-            init() {
+            async init() {
+                await this.initDatabase();
                 this.bindEvents();
+                await this.loadTasks();
                 this.render();
+            }
+
+            async initDatabase() {
+                try {
+                    this.client = createClient({
+                        url: 'libsql://todo-devcrypted.aws-ap-south-1.turso.io',
+                        authToken: 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3NTQwNTQxNjYsImlkIjoiNzlkNjk3YzItY2JiZi00Y2RmLThhYzctYzI4MmI5MDUwOGQ1IiwicmlkIjoiNTg1ZTA2YjktNTRhYS00MTYzLTkyNTEtY2U3MWM2OGViZmU4In0.6H5Arisc3r7pOiGdAoZl6lyDKSdgtfFjB4V6DioUKw0rxeKgzYYt0UcHzhUXaTnM_5VahPuxE2GaxaE-ltgtDg'
+                    });
+
+                    // Create tasks table if it doesn't exist
+                    await this.client.execute(`
+                        CREATE TABLE IF NOT EXISTS tasks (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            title TEXT NOT NULL,
+                            completed BOOLEAN DEFAULT FALSE,
+                            priority TEXT DEFAULT 'medium',
+                            due_date TEXT,
+                            notes TEXT,
+                            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                            updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+                        )
+                    `);
+
+                    console.log('Database initialized successfully');
+                } catch (error) {
+                    console.error('Database initialization failed:', error);
+                    // Fallback to in-memory storage
+                    this.client = null;
+                }
+            }
+
+            async loadTasks() {
+                if (!this.client) {
+                    console.log('Using in-memory storage');
+                    return;
+                }
+
+                try {
+                    const result = await this.client.execute('SELECT * FROM tasks ORDER BY created_at DESC');
+                    this.tasks = result.rows.map(row => ({
+                        id: row.id,
+                        title: row.title,
+                        completed: Boolean(row.completed),
+                        priority: row.priority || 'medium',
+                        dueDate: row.due_date || '',
+                        notes: row.notes || '',
+                        createdAt: row.created_at,
+                        expanded: false
+                    }));
+
+                    // Set currentId to be higher than the highest existing ID
+                    if (this.tasks.length > 0) {
+                        this.currentId = Math.max(...this.tasks.map(t => t.id)) + 1;
+                    }
+                } catch (error) {
+                    console.error('Failed to load tasks:', error);
+                }
             }
 
             bindEvents() {
@@ -384,14 +447,13 @@
                 });
             }
 
-            addTask() {
+            async addTask() {
                 const input = document.getElementById('taskInput');
                 const title = input.value.trim();
                 
                 if (!title) return;
 
                 const task = {
-                    id: this.currentId++,
                     title,
                     completed: false,
                     priority: 'medium',
@@ -401,23 +463,63 @@
                     expanded: false
                 };
 
-                this.tasks.unshift(task);
-                input.value = '';
-                document.getElementById('addBtn').disabled = true;
-                this.render();
-            }
+                try {
+                    if (this.client) {
+                        const result = await this.client.execute({
+                            sql: 'INSERT INTO tasks (title, completed, priority, due_date, notes) VALUES (?, ?, ?, ?, ?)',
+                            args: [task.title, task.completed, task.priority, task.dueDate, task.notes]
+                        });
+                        task.id = result.lastInsertRowid;
+                    } else {
+                        task.id = this.currentId++;
+                    }
 
-            toggleTask(id) {
-                const task = this.tasks.find(t => t.id === id);
-                if (task) {
-                    task.completed = !task.completed;
+                    this.tasks.unshift(task);
+                    input.value = '';
+                    document.getElementById('addBtn').disabled = true;
                     this.render();
+                } catch (error) {
+                    console.error('Failed to add task:', error);
+                    alert('Failed to add task. Please try again.');
                 }
             }
 
-            deleteTask(id) {
-                this.tasks = this.tasks.filter(t => t.id !== id);
-                this.render();
+            async toggleTask(id) {
+                const task = this.tasks.find(t => t.id === id);
+                if (!task) return;
+
+                task.completed = !task.completed;
+
+                try {
+                    if (this.client) {
+                        await this.client.execute({
+                            sql: 'UPDATE tasks SET completed = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+                            args: [task.completed, id]
+                        });
+                    }
+                    this.render();
+                } catch (error) {
+                    console.error('Failed to update task:', error);
+                    // Revert the change
+                    task.completed = !task.completed;
+                    alert('Failed to update task. Please try again.');
+                }
+            }
+
+            async deleteTask(id) {
+                try {
+                    if (this.client) {
+                        await this.client.execute({
+                            sql: 'DELETE FROM tasks WHERE id = ?',
+                            args: [id]
+                        });
+                    }
+                    this.tasks = this.tasks.filter(t => t.id !== id);
+                    this.render();
+                } catch (error) {
+                    console.error('Failed to delete task:', error);
+                    alert('Failed to delete task. Please try again.');
+                }
             }
 
             toggleExpand(id) {
@@ -437,20 +539,36 @@
                 this.render();
             }
 
-            saveTask(id) {
+            async saveTask(id) {
                 const task = this.tasks.find(t => t.id === id);
                 if (!task) return;
 
                 const form = document.querySelector(`[data-task-id="${id}"] .task-form`);
                 const formData = new FormData(form);
                 
-                task.title = formData.get('title') || task.title;
-                task.priority = formData.get('priority') || task.priority;
-                task.dueDate = formData.get('dueDate') || task.dueDate;
-                task.notes = formData.get('notes') || task.notes;
-                
-                this.editingId = null;
-                this.render();
+                const updatedTask = {
+                    title: formData.get('title') || task.title,
+                    priority: formData.get('priority') || task.priority,
+                    dueDate: formData.get('dueDate') || task.dueDate,
+                    notes: formData.get('notes') || task.notes
+                };
+
+                try {
+                    if (this.client) {
+                        await this.client.execute({
+                            sql: 'UPDATE tasks SET title = ?, priority = ?, due_date = ?, notes = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+                            args: [updatedTask.title, updatedTask.priority, updatedTask.dueDate, updatedTask.notes, id]
+                        });
+                    }
+
+                    // Update local task
+                    Object.assign(task, updatedTask);
+                    this.editingId = null;
+                    this.render();
+                } catch (error) {
+                    console.error('Failed to save task:', error);
+                    alert('Failed to save task. Please try again.');
+                }
             }
 
             cancelEdit() {
