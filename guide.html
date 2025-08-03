@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect with Kamal Kumar - Free Cloud & DevOps Mentorship</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" integrity="sha512-HXXR0l2yMwHDrDyxJbrMD9eLvPe3z3qL3PPeozNTsiHJEENxx8DH2CxmV05iwG0dwoz5n4gQZQyYLUNt1Wdgfg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: #e2e8f0;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.6; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+        }
+
+        .free-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .hero-intro {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .hero-position {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            letter-spacing: 0.5px;
+        }
+
+        .hero h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .hero .subtitle {
+            font-size: 1.3rem;
+            color: #94a3b8;
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        /* Social Proof Stats */
+        .social-proof {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+            padding: 3rem 0;
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 30px;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        .proof-item {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .proof-number {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #3b82f6;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .proof-label {
+            color: #cbd5e1;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* CTA Buttons */
+        .cta-section {
+            margin: 4rem 0;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            border: none;
+            cursor: pointer;
+            min-width: 200px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4);
+            transform: translateY(0);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 45px rgba(59, 130, 246, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(30, 41, 59, 0.8);
+            color: #cbd5e1;
+            border: 2px solid rgba(59, 130, 246, 0.5);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: #3b82f6;
+            color: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        /* Contact Methods */
+        .contact-methods {
+            padding: 80px 0;
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: #f1f5f9;
+            letter-spacing: -0.02em;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .contact-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(20px);
+            padding: 2.5rem;
+            border-radius: 25px;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-8px);
+            border-color: #3b82f6;
+            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.2);
+        }
+
+        .contact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .contact-card:hover::before {
+            left: 100%;
+        }
+
+        .contact-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .contact-card:nth-child(1) .contact-icon { color: #10b981; }
+        .contact-card:nth-child(2) .contact-icon { color: #3b82f6; }
+        .contact-card:nth-child(3) .contact-icon { color: #8b5cf6; }
+
+        .contact-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .contact-desc {
+            color: #94a3b8;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Contact Form */
+        .contact-form {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 3rem;
+            border-radius: 25px;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            margin-top: 3rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #cbd5e1;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid rgba(71, 85, 105, 0.3);
+            border-radius: 15px;
+            color: #e2e8f0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* Social Links */
+        .social-section {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(30, 41, 59, 0.6);
+            padding: 1.5rem 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            text-decoration: none;
+            color: #cbd5e1;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .social-link:hover {
+            transform: translateY(-5px);
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .social-link i {
+            font-size: 2rem;
+        }
+
+        .social-info {
+            text-align: left;
+        }
+
+        .social-platform {
+            font-weight: 700;
+            color: #f1f5f9;
+            font-size: 1.1rem;
+        }
+
+        .social-stat {
+            color: #3b82f6;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .linkedin { color: #0077b5; }
+        .youtube { color: #ff0000; }
+        .github { color: #333; }
+        .twitter { color: #1da1f2; }
+
+        /* Footer */
+        footer {
+            background: rgba(15, 23, 42, 0.9);
+            padding: 3rem 0 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        .footer-content {
+            color: #94a3b8;
+        }
+
+        .footer-highlight {
+            color: #10b981;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-name {
+                font-size: 3rem;
+            }
+            
+            .hero-position {
+                font-size: 1.2rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .social-proof {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+                padding: 2rem 1rem;
+            }
+
+            .proof-number {
+                font-size: 2.2rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .social-links {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .social-link {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .contact-form {
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .hero {
+                padding: 60px 0;
+            }
+
+            .hero-name {
+                font-size: 2.5rem;
+            }
+            
+            .hero-position {
+                font-size: 1.1rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .social-proof {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 2.2rem;
+            }
+
+            .contact-card {
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid #10b981;
+            color: #10b981;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-intro">Hi, I'm</div>
+                    <div class="hero-name">Kamal Kumar</div>
+                    <div class="hero-position">Lead Cloud Platform Engineer</div>
+                    
+                    <div class="free-badge">
+                        <i class="ri-gift-line"></i> 100% FREE MENTORSHIP
+                    </div>
+                    
+                    <h1>Get Expert Cloud & DevOps Guidance</h1>
+                    <p class="subtitle">
+                        Connect with me for free career guidance, technical mentorship, and project consultation. 
+                        I'm here to help you accelerate your cloud journey - no strings attached.
+                    </p>
+
+                    <div class="social-proof">
+                        <div class="proof-item">
+                            <span class="proof-number">9+</span>
+                            <span class="proof-label">Years Experience</span>
+                        </div>
+                        <div class="proof-item">
+                            <span class="proof-number">100+</span>
+                            <span class="proof-label">Students Mentored</span>
+                        </div>
+                        <div class="proof-item">
+                            <span class="proof-number">20x</span>
+                            <span class="proof-label">Cloud Certified</span>
+                        </div>
+                        <div class="proof-item">
+                            <span class="proof-number">7.5K</span>
+                            <span class="proof-label">LinkedIn Followers</span>
+                        </div>
+                        <div class="proof-item">
+                            <span class="proof-number">2.5K</span>
+                            <span class="proof-label">YouTube Subscribers</span>
+                        </div>
+                    </div>
+
+                    <div class="cta-section">
+                        <div class="cta-buttons">
+                            <a href="https://cal.com/kamalk" class="btn btn-primary" target="_blank">
+                                <i class="ri-calendar-check-line"></i>
+                                Book Free Session
+                            </a>
+                            <a href="mailto:kamal.dogra@outlook.com" class="btn btn-secondary">
+                                <i class="ri-mail-line"></i>
+                                Send Email
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact-methods">
+            <div class="container">
+                <h2 class="section-title">Choose How to Connect</h2>
+                <p class="section-subtitle">
+                    Multiple ways to reach out - pick what works best for you. All consultations are completely free.
+                </p>
+                
+                <div class="contact-grid">
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="ri-video-line"></i>
+                        </div>
+                        <h3 class="contact-title">Schedule a Meeting</h3>
+                        <p class="contact-desc">
+                            Book a 30-minute free session for career guidance, technical questions, or project review. 
+                            Perfect for detailed discussions and screen sharing.
+                        </p>
+                        <a href="https://cal.com/kamalk" class="btn btn-primary" target="_blank">
+                            <i class="ri-calendar-line"></i>
+                            Book Now
+                        </a>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="ri-mail-line"></i>
+                        </div>
+                        <h3 class="contact-title">Direct Email</h3>
+                        <p class="contact-desc">
+                            Send me an email for project inquiries, collaboration opportunities, or if you prefer 
+                            detailed written communication.
+                        </p>
+                        <a href="mailto:kamal.dogra@outlook.com" class="btn btn-secondary">
+                            <i class="ri-send-plane-line"></i>
+                            Send Email
+                        </a>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="ri-chat-3-line"></i>
+                        </div>
+                        <h3 class="contact-title">Quick Message</h3>
+                        <p class="contact-desc">
+                            Fill out the form below for quick questions or to introduce yourself. 
+                            I'll get back to you within 24 hours.
+                        </p>
+                        <a href="#contact-form" class="btn btn-secondary">
+                            <i class="ri-edit-line"></i>
+                            Fill Form
+                        </a>
+                    </div>
+                </div>
+
+                <div id="contact-form" class="contact-form">
+                    <h3 style="text-align: center; color: #f1f5f9; margin-bottom: 2rem; font-size: 1.8rem;">
+                        Send me a message
+                    </h3>
+                    
+                    <form action="https://api.web3forms.com/submit" method="POST" id="contactForm">
+                        <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
+                        <input type="hidden" name="subject" value="New Contact from guide.kamal.sh">
+                        <input type="hidden" name="from_name" value="Guide.Kamal.sh Contact Form">
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Full Name *</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address *</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="company">Company/Organization</label>
+                                <input type="text" id="company" name="company">
+                            </div>
+                            <div class="form-group">
+                                <label for="experience">Experience Level</label>
+                                <select id="experience" name="experience">
+                                    <option value="">Select your level</option>
+                                    <option value="beginner">Beginner (0-2 years)</option>
+                                    <option value="intermediate">Intermediate (2-5 years)</option>
+                                    <option value="experienced">Experienced (5+ years)</option>
+                                    <option value="expert">Expert/Lead (8+ years)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="help_type">What do you need help with?</label>
+                            <select id="help_type" name="help_type">
+                                <option value="">Select topic</option>
+                                <option value="career">Career Guidance</option>
+                                <option value="technical">Technical Mentorship</option>
+                                <option value="project">Project Consultation</option>
+                                <option value="certification">Certification Path</option>
+                                <option value="interview">Interview Preparation</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Your Message *</label>
+                            <textarea id="message" name="message" required placeholder="Tell me about your background, current challenges, and how I can help you..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            <span class="submit-text">
+                                <i class="ri-send-plane-2-line"></i>
+                                Send Message
+                            </span>
+                            <span class="loading">
+                                <div class="spinner"></div>
+                                Sending...
+                            </span>
+                        </button>
+
+                        <div class="success-message">
+                            <i class="ri-checkbox-circle-line"></i>
+                            Thanks for reaching out! I'll get back to you within 24 hours.
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section class="social-section">
+            <div class="container">
+                <h2 class="section-title">Follow My Journey</h2>
+                <p class="section-subtitle">
+                    Stay updated with the latest cloud & DevOps insights, tutorials, and career tips.
+                </p>
+                
+                <div class="social-links">
+                    <a href="#" class="social-link">
+                        <i class="ri-linkedin-box-line linkedin"></i>
+                        <div class="social-info">
+                            <div class="social-platform">LinkedIn</div>
+                            <div class="social-stat">7.5K Followers</div>
+                        </div>
+                    </a>
+                    
+                    <a href="#" class="social-link">
+                        <i class="ri-youtube-line youtube"></i>
+                        <div class="social-info">
+                            <div class="social-platform">YouTube</div>
+                            <div class="social-stat">2.5K Subscribers</div>
+                        </div>
+                    </a>
+                    
+                    <a href="#" class="social-link">
+                        <i class="ri-github-line github"></i>
+                        <div class="social-info">
+                            <div class="social-platform">GitHub</div>
+                            <div class="social-stat">Open Source</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <span class="footer-highlight">
+                    <i class="ri-heart-3-line" style="color: #ef4444;"></i>
+                    100% Free Mentorship - Always
+                </span>
+                <p>&copy; 2025 Kamal Kumar - Cloud & DevOps Guide</p>
+                <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+                    Helping professionals grow in their cloud journey, one conversation at a time.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Form submission
+        const form = document.getElementById('contactForm');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const submitText = submitBtn.querySelector('.submit-text');
+        const loading = submitBtn.querySelector('.loading');
+        const successMessage = form.querySelector('.success-message');
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            submitText.style.display = 'none';
+            loading.style.display = 'flex';
+            submitBtn.disabled = true;
+
+            try {
+                const formData = new FormData(form);
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    successMessage.style.display = 'block';
+                    form.reset();
+                    
+                    // Scroll to success message
+                    successMessage.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' 
+                    });
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            } catch (error) {
+                alert('Sorry, there was an error sending your message. Please try emailing me directly at kamal.dogra@outlook.com');
+            } finally {
+                // Reset button state
+                submitText.style.display = 'flex';
+                loading.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Apply animation to cards
+        document.querySelectorAll('.contact-card, .social-link').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
