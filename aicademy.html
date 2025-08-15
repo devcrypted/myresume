@@ -1,0 +1,135 @@
+<svg viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Premium gradients -->
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f093fb;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2d3748;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4a5568;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Glow effect -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Subtle shadow -->
+    <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  
+  <!-- Background subtle pattern -->
+  <defs>
+    <pattern id="dotPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="0.5" fill="url(#accentGrad)" opacity="0.1"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="120" fill="url(#dotPattern)"/>
+  
+  <!-- Main logo container -->
+  <g transform="translate(40, 30)">
+    
+    <!-- Sophisticated icon: Neural network in a hexagonal frame -->
+    <g transform="translate(0, 0)">
+      <!-- Outer hexagonal frame -->
+      <polygon points="30,8 45,17 45,35 30,44 15,35 15,17" 
+               fill="none" 
+               stroke="url(#primaryGrad)" 
+               stroke-width="2.5" 
+               opacity="0.8"/>
+      
+      <!-- Inner hexagonal glow -->
+      <polygon points="30,12 40,18 40,30 30,36 20,30 20,18" 
+               fill="url(#accentGrad)" 
+               opacity="0.1"
+               filter="url(#glow)"/>
+      
+      <!-- Central neural hub -->
+      <circle cx="30" cy="26" r="4" fill="url(#primaryGrad)" filter="url(#softShadow)"/>
+      
+      <!-- Neural nodes - strategically placed -->
+      <circle cx="22" cy="18" r="2.5" fill="url(#accentGrad)" opacity="0.9"/>
+      <circle cx="38" cy="18" r="2.5" fill="url(#accentGrad)" opacity="0.9"/>
+      <circle cx="22" cy="34" r="2.5" fill="url(#accentGrad)" opacity="0.9"/>
+      <circle cx="38" cy="34" r="2.5" fill="url(#accentGrad)" opacity="0.9"/>
+      <circle cx="30" cy="14" r="2" fill="url(#primaryGrad)" opacity="0.8"/>
+      <circle cx="30" cy="38" r="2" fill="url(#primaryGrad)" opacity="0.8"/>
+      
+      <!-- Neural connections with varying opacity for depth -->
+      <line x1="25" y1="21" x2="32" y2="26" stroke="url(#primaryGrad)" stroke-width="1.5" opacity="0.7"/>
+      <line x1="35" y1="21" x2="32" y2="26" stroke="url(#accentGrad)" stroke-width="1.5" opacity="0.8"/>
+      <line x1="25" y1="31" x2="32" y2="26" stroke="url(#primaryGrad)" stroke-width="1.5" opacity="0.7"/>
+      <line x1="35" y1="31" x2="32" y2="26" stroke="url(#accentGrad)" stroke-width="1.5" opacity="0.8"/>
+      <line x1="30" y1="16" x2="30" y2="22" stroke="url(#primaryGrad)" stroke-width="1.8" opacity="0.9"/>
+      <line x1="30" y1="30" x2="30" y2="36" stroke="url(#primaryGrad)" stroke-width="1.8" opacity="0.9"/>
+      
+      <!-- Subtle pulsing elements -->
+      <circle cx="30" cy="26" r="1" fill="white" opacity="0.9"/>
+    </g>
+    
+    <!-- Perfect typography -->
+    <g transform="translate(75, 0)">
+      <!-- "Ai" with sophisticated styling -->
+      <text x="0" y="35" 
+            font-family="Arial, -apple-system, BlinkMacSystemFont, sans-serif" 
+            font-size="34" 
+            font-weight="700" 
+            fill="url(#primaryGrad)" 
+            filter="url(#softShadow)"
+            letter-spacing="-0.5px">Ai</text>
+      
+      <!-- "cademy" with perfect kerning -->
+      <text x="46" y="35" 
+            font-family="Arial, -apple-system, BlinkMacSystemFont, sans-serif" 
+            font-size="34" 
+            font-weight="400" 
+            fill="url(#textGrad)"
+            letter-spacing="0.5px">cademy</text>
+      
+      <!-- Sophisticated tagline -->
+      <text x="0" y="52" 
+            font-family="Arial, -apple-system, BlinkMacSystemFont, sans-serif" 
+            font-size="11" 
+            font-weight="300" 
+            fill="#718096" 
+            letter-spacing="2px"
+            opacity="0.8">INTELLIGENT LEARNING</text>
+      
+      <!-- Elegant accent line -->
+      <line x1="0" y1="45" x2="60" y2="45" 
+            stroke="url(#accentGrad)" 
+            stroke-width="1" 
+            opacity="0.4"/>
+      
+      <!-- Subtle geometric accent -->
+      <circle cx="200" cy="26" r="2" fill="url(#primaryGrad)" opacity="0.3"/>
+      <circle cx="210" cy="20" r="1.5" fill="url(#accentGrad)" opacity="0.4"/>
+      <circle cx="205" cy="32" r="1" fill="url(#primaryGrad)" opacity="0.5"/>
+      
+      <!-- Connecting lines for the accent -->
+      <path d="M200 26 L210 20 M200 26 L205 32 M210 20 L205 32" 
+            stroke="url(#accentGrad)" 
+            stroke-width="0.5" 
+            opacity="0.3"/>
+    </g>
+  </g>
+  
+  <!-- Subtle corner elements for premium feel -->
+  <circle cx="350" cy="25" r="1" fill="url(#primaryGrad)" opacity="0.2"/>
+  <circle cx="360" cy="30" r="1.5" fill="url(#accentGrad)" opacity="0.15"/>
+  
+</svg>
