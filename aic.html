@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aicademy | Master AI & Data Science</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Animate On Scroll (AOS) Library CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0B1120;
+            color: #E0E0E0;
+        }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(90deg, #4F46E5, #A855F7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        
+        /* Custom Button Styles */
+        .btn-primary {
+            background-image: linear-gradient(to right, #4f46e5 0%, #a855f7 51%, #4f46e5 100%);
+            background-size: 200% auto;
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .btn-primary:hover {
+            background-position: right center;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            border: 1px solid #4f46e5;
+            color: #E0E0E0;
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background-color: #4f46e5;
+            color: white;
+        }
+
+        /* Animated Background Blobs */
+        .background-blobs {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+        }
+        .blob1 {
+            width: 400px;
+            height: 400px;
+            background: #4F46E5;
+            top: -150px;
+            left: -150px;
+            animation: moveBlob1 20s infinite alternate;
+        }
+        .blob2 {
+            width: 300px;
+            height: 300px;
+            background: #A855F7;
+            bottom: -100px;
+            right: -100px;
+            animation: moveBlob2 25s infinite alternate;
+        }
+
+        @keyframes moveBlob1 {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(200px, 100px) scale(1.2); }
+        }
+        @keyframes moveBlob2 {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(-150px, -100px) scale(0.8); }
+        }
+
+        /* Glassmorphism Effect for Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* FAQ Accordion Styles */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .accordion-item.active .accordion-content {
+            max-height: 500px; /* Adjust as needed */
+        }
+        .accordion-item.active .accordion-icon {
+            transform: rotate(45deg);
+        }
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="relative">
+
+    <!-- Animated Background -->
+    <div class="background-blobs">
+        <div class="blob blob1"></div>
+        <div class="blob blob2"></div>
+    </div>
+    
+    <!-- Header -->
+    <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="#" class="text-2xl font-bold text-white">Aicademy<span class="text-indigo-400">.</span></a>
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#courses" class="text-gray-300 hover:text-white transition">Courses</a>
+                    <a href="#why-us" class="text-gray-300 hover:text-white transition">Why Us</a>
+                    <a href="#testimonials" class="text-gray-300 hover:text-white transition">Testimonials</a>
+                    <a href="#faq" class="text-gray-300 hover:text-white transition">FAQ</a>
+                </nav>
+                <div class="flex items-center">
+                    <a href="#contact" class="hidden md:inline-block btn-primary text-white font-semibold py-2 px-6 rounded-lg shadow-lg">Enroll Now</a>
+                    <button id="mobile-menu-button" class="md:hidden text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-900/80 backdrop-blur-sm">
+            <a href="#courses" class="block py-2 px-6 text-gray-300 hover:text-white">Courses</a>
+            <a href="#why-us" class="block py-2 px-6 text-gray-300 hover:text-white">Why Us</a>
+            <a href="#testimonials" class="block py-2 px-6 text-gray-300 hover:text-white">Testimonials</a>
+            <a href="#faq" class="block py-2 px-6 text-gray-300 hover:text-white">FAQ</a>
+            <div class="p-4">
+                <a href="#contact" class="w-full text-center block btn-primary text-white font-semibold py-2 px-6 rounded-lg shadow-lg">Enroll Now</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="overflow-x-hidden">
+        <!-- Hero Section -->
+        <section class="min-h-screen flex items-center pt-24 pb-12">
+            <div class="container mx-auto px-6 text-center">
+                <div data-aos="fade-up">
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-4">
+                        Shape the Future with <span class="gradient-text">Artificial Intelligence</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8">
+                        Unlock your potential with our industry-leading AI and Data Science courses. Go from beginner to expert with hands-on projects and expert mentorship.
+                    </p>
+                    <div class="flex justify-center items-center gap-4 flex-wrap">
+                        <a href="#courses" class="btn-primary text-white font-bold py-3 px-8 rounded-lg shadow-xl text-lg">Explore Courses</a>
+                        <a href="#contact" class="btn-secondary font-bold py-3 px-8 rounded-lg text-lg">Request a Callback</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Courses Section -->
+        <section id="courses" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12" data-aos="fade-up">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">Our Flagship <span class="gradient-text">Courses</span></h2>
+                    <p class="text-gray-400 mt-2">Designed by industry experts to make you job-ready.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Course Card 1 -->
+                    <div class="glass-card rounded-xl p-8 transform hover:-translate-y-2 transition-transform duration-300" data-aos="fade-up" data-aos-delay="100">
+                        <div class="mb-4"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400"><path d="M12 12v-2a3 3 0 0 0-3-3H7"/><path d="M12 12v-2a3 3 0 0 1 3-3h2"/><path d="M12 12v2a3 3 0 0 0 3 3h2"/><path d="M12 12v2a3 3 0 0 1-3 3H7"/><path d="M7 12h10"/></svg></div>
+                        <h3 class="text-2xl font-bold text-white mb-2">AI & Machine Learning</h3>
+                        <p class="text-gray-400">Master the fundamentals of AI and build intelligent models with our comprehensive ML program.</p>
+                    </div>
+                    <!-- Course Card 2 -->
+                    <div class="glass-card rounded-xl p-8 transform hover:-translate-y-2 transition-transform duration-300" data-aos="fade-up" data-aos-delay="200">
+                        <div class="mb-4"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Data Science & Analytics</h3>
+                        <p class="text-gray-400">Learn to extract insights from data. Covers everything from statistics to data visualization.</p>
+                    </div>
+                    <!-- Course Card 3 -->
+                    <div class="glass-card rounded-xl p-8 transform hover:-translate-y-2 transition-transform duration-300" data-aos="fade-up" data-aos-delay="300">
+                         <div class="mb-4"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg></div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Python for AI/ML</h3>
+                        <p class="text-gray-400">Build a strong foundation in Python, the most popular language for AI and Data Science.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Us Section -->
+        <section id="why-us" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12" data-aos="fade-up">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">Why Learn with <span class="gradient-text">Aicademy?</span></h2>
+                </div>
+                <!-- Feature 1 -->
+                <div class="flex flex-col md:flex-row items-center gap-12 mb-16">
+                    <div class="md:w-1/2" data-aos="fade-right">
+                        <h3 class="text-2xl font-bold text-white mb-3">Expert-Led Instruction</h3>
+                        <p class="text-gray-400 mb-4">Learn from seasoned industry professionals who bring real-world experience from leading tech companies directly to your classroom.</p>
+                        <ul class="space-y-2 text-gray-300">
+                            <li class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>1-on-1 Mentorship</li>
+                            <li class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>Live Doubt Clearing Sessions</li>
+                        </ul>
+                    </div>
+                    <div class="md:w-1/2" data-aos="fade-left">
+                        <div class="glass-card rounded-xl p-8">
+                            <img src="https://placehold.co/600x400/111827/4F46E5?text=Expert+Instructors" alt="Expert Instructors" class="rounded-lg shadow-2xl w-full">
+                        </div>
+                    </div>
+                </div>
+                <!-- Feature 2 -->
+                <div class="flex flex-col md:flex-row-reverse items-center gap-12">
+                    <div class="md:w-1/2" data-aos="fade-left">
+                        <h3 class="text-2xl font-bold text-white mb-3">Project-Based Curriculum</h3>
+                        <p class="text-gray-400 mb-4">You don't just learn theory. You build. Our curriculum is packed with hands-on projects that mirror real-world challenges, building you a solid portfolio.</p>
+                         <ul class="space-y-2 text-gray-300">
+                            <li class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>Build 5+ Portfolio Projects</li>
+                            <li class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>Industry-Relevant Case Studies</li>
+                        </ul>
+                    </div>
+                    <div class="md:w-1/2" data-aos="fade-right">
+                         <div class="glass-card rounded-xl p-8">
+                            <img src="https://placehold.co/600x400/111827/A855F7?text=Real-World+Projects" alt="Real-World Projects" class="rounded-lg shadow-2xl w-full">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12" data-aos="fade-up">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">What Our <span class="gradient-text">Students Say</span></h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Testimonial 1 -->
+                    <div class="glass-card rounded-xl p-8" data-aos="fade-up" data-aos-delay="100">
+                        <p class="text-gray-300 mb-6">"The project-based approach at Aicademy was a game-changer. I built a solid portfolio that helped me land a job at a top startup even before I graduated."</p>
+                        <div class="flex items-center">
+                            <img src="https://placehold.co/40x40/cccccc/111827?text=AK" class="w-10 h-10 rounded-full mr-4" alt="Ankit Kumar">
+                            <div>
+                                <h4 class="font-bold text-white">Ankit Kumar</h4>
+                                <p class="text-sm text-gray-400">Data Scientist @ GrowthAI</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Testimonial 2 -->
+                    <div class="glass-card rounded-xl p-8" data-aos="fade-up" data-aos-delay="200">
+                        <p class="text-gray-300 mb-6">"The instructors are incredibly knowledgeable and supportive. The 1-on-1 mentorship sessions were invaluable in clearing my doubts and guiding my career path."</p>
+                        <div class="flex items-center">
+                            <img src="https://placehold.co/40x40/cccccc/111827?text=P" class="w-10 h-10 rounded-full mr-4" alt="Priya Sharma">
+                            <div>
+                                <h4 class="font-bold text-white">Priya Sharma</h4>
+                                <p class="text-sm text-gray-400">ML Engineer @ TechSolutions</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Testimonial 3 -->
+                    <div class="glass-card rounded-xl p-8" data-aos="fade-up" data-aos-delay="300">
+                        <p class="text-gray-300 mb-6">"I was a complete beginner, but Aicademy's structured curriculum made learning Python and ML feel so accessible. Highly recommended!"</p>
+                        <div class="flex items-center">
+                            <img src="https://placehold.co/40x40/cccccc/111827?text=R" class="w-10 h-10 rounded-full mr-4" alt="Rahul Verma">
+                            <div>
+                                <h4 class="font-bold text-white">Rahul Verma</h4>
+                                <p class="text-sm text-gray-400">Software Developer</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- FAQ Section -->
+        <section id="faq" class="py-20">
+            <div class="container mx-auto px-6 max-w-3xl">
+                 <div class="text-center mb-12" data-aos="fade-up">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">Frequently Asked <span class="gradient-text">Questions</span></h2>
+                </div>
+                <div class="space-y-4" data-aos="fade-up">
+                    <!-- FAQ Item 1 -->
+                    <div class="accordion-item glass-card rounded-lg overflow-hidden">
+                        <button class="accordion-header w-full text-left p-6 flex justify-between items-center">
+                            <span class="font-semibold text-white text-lg">Are there any prerequisites for the courses?</span>
+                            <span class="accordion-icon text-2xl text-indigo-400">+</span>
+                        </button>
+                        <div class="accordion-content">
+                            <p class="p-6 pt-0 text-gray-400">
+                                For most of our beginner-level courses, there are no specific prerequisites. A basic understanding of mathematics and a passion for learning are all you need. For advanced courses, some programming knowledge is recommended.
+                            </p>
+                        </div>
+                    </div>
+                     <!-- FAQ Item 2 -->
+                    <div class="accordion-item glass-card rounded-lg overflow-hidden">
+                        <button class="accordion-header w-full text-left p-6 flex justify-between items-center">
+                            <span class="font-semibold text-white text-lg">Do you provide placement assistance?</span>
+                            <span class="accordion-icon text-2xl text-indigo-400">+</span>
+                        </button>
+                        <div class="accordion-content">
+                            <p class="p-6 pt-0 text-gray-400">
+                                Yes, we offer comprehensive career support, including resume building workshops, mock interviews, and access to our network of hiring partners. Our goal is to make you not just skilled, but also job-ready.
+                            </p>
+                        </div>
+                    </div>
+                     <!-- FAQ Item 3 -->
+                    <div class="accordion-item glass-card rounded-lg overflow-hidden">
+                        <button class="accordion-header w-full text-left p-6 flex justify-between items-center">
+                            <span class="font-semibold text-white text-lg">What if I miss a live class?</span>
+                            <span class="accordion-icon text-2xl text-indigo-400">+</span>
+                        </button>
+                        <div class="accordion-content">
+                            <p class="p-6 pt-0 text-gray-400">
+                                Not a problem! All our live sessions are recorded and made available on your learning dashboard, so you can watch them anytime at your convenience. You'll never truly miss out.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-gray-900/50">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4">Aicademy<span class="text-indigo-400">.</span></h3>
+                    <p class="text-gray-400">Your launchpad into the world of Artificial Intelligence.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#courses" class="text-gray-400 hover:text-indigo-400">Courses</a></li>
+                        <li><a href="#why-us" class="text-gray-400 hover:text-indigo-400">Why Us</a></li>
+                        <li><a href="#faq" class="text-gray-400 hover:text-indigo-400">FAQ</a></li>
+                    </ul>
+                </div>
+                <div>
+                     <h4 class="font-semibold text-white mb-4">Contact</h4>
+                    <ul class="space-y-2">
+                        <li><a href="mailto:info@aicademy.ac" class="text-gray-400 hover:text-indigo-400">info@aicademy.ac</a></li>
+                        <li><p class="text-gray-400">GTB Nagar, Delhi, India</p></li>
+                    </ul>
+                </div>
+                 <div>
+                     <h4 class="font-semibold text-white mb-4">Follow Us</h4>
+                     <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-indigo-400">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" /></svg>
+                        </a>
+                         <a href="#" class="text-gray-400 hover:text-indigo-400">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" /></svg>
+                        </a>
+                         <a href="#" class="text-gray-400 hover:text-indigo-400">
+                             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M16.338 16.338H13.67V12.16c0-.995-.017-2.277-1.387-2.277-1.39 0-1.601 1.086-1.601 2.207v4.248H8.014v-8.59h2.559v1.174h.037c.356-.675 1.227-1.387 2.526-1.387 2.703 0 3.203 1.778 3.203 4.092v4.711zM5.005 6.575a1.548 1.548 0 11-3.096 0 1.548 1.548 0 013.096 0zM6.55 8.009H3.45V16.59h3.1V8.009zM19.98 3.98A15.98 15.98 0 114.02 19.98 15.98 15.98 0 0119.98 3.98z" clip-rule="evenodd" /></svg>
+                        </a>
+                     </div>
+                </div>
+            </div>
+            <div class="mt-8 border-t border-gray-800 pt-8 text-center text-gray-500">
+                <p>&copy; 2024 Aicademy. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Animate On Scroll (AOS) Library JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 50,
+        });
+
+        // Header scroll effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('bg-gray-900/80', 'backdrop-blur-sm', 'shadow-lg');
+            } else {
+                header.classList.remove('bg-gray-900/80', 'backdrop-blur-sm', 'shadow-lg');
+            }
+        });
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when a link is clicked
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // FAQ Accordion
+        const accordionItems = document.querySelectorAll('.accordion-item');
+        accordionItems.forEach(item => {
+            const header = item.querySelector('.accordion-header');
+            header.addEventListener('click', () => {
+                // Close other items
+                accordionItems.forEach(otherItem => {
+                    if (otherItem !== item && otherItem.classList.contains('active')) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+                // Toggle current item
+                item.classList.toggle('active');
+            });
+        });
+
+    </script>
+</body>
+</html>
+
