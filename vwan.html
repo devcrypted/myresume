@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Azure Virtual WAN Architecture</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.2em;
+        }
+        .diagram-container {
+            position: relative;
+            width: 100%;
+            height: 800px;
+            border: 2px solid #e74c3c;
+            border-radius: 15px;
+            background: linear-gradient(45deg, #f8f9fa 0%, #e9ecef 100%);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        .component {
+            position: absolute;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .component:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            z-index: 100;
+        }
+        .vwan-hub {
+            background: #3498db;
+            color: white;
+            border-color: #2980b9;
+            width: 120px;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .vnet {
+            background: #2ecc71;
+            color: white;
+            border-color: #27ae60;
+            width: 100px;
+            height: 60px;
+        }
+        .datacenter {
+            background: #e74c3c;
+            color: white;
+            border-color: #c0392b;
+            width: 110px;
+            height: 70px;
+        }
+        .remote-site {
+            background: #f39c12;
+            color: white;
+            border-color: #e67e22;
+            width: 90px;
+            height: 50px;
+        }
+        .user-group {
+            background: #9b59b6;
+            color: white;
+            border-color: #8e44ad;
+            width: 80px;
+            height: 50px;
+        }
+        .security {
+            background: #1abc9c;
+            color: white;
+            border-color: #16a085;
+            width: 90px;
+            height: 50px;
+        }
+        .connection {
+            position: absolute;
+            background: #34495e;
+            height: 3px;
+            transform-origin: left center;
+        }
+        .connection.express-route {
+            background: #e74c3c;
+            height: 4px;
+        }
+        .connection.vpn {
+            background: #f39c12;
+            height: 3px;
+            border-top: 2px dashed #d35400;
+        }
+        .connection.vnet-peering {
+            background: #2ecc71;
+            height: 2px;
+        }
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 11px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .legend h4 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 12px;
+            border-radius: 3px;
+            margin-right: 8px;
+        }
+        .info-panel {
+            background: #ecf0f1;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .info-panel h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .tooltip {
+            position: absolute;
+            background: #2c3e50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 11px;
+            max-width: 200px;
+            z-index: 1000;
+            display: none;
+        }
+        .region-label {
+            position: absolute;
+            font-size: 14px;
+            font-weight: bold;
+            color: #7f8c8d;
+            background: rgba(255,255,255,0.8);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏢 Enterprise Azure Virtual WAN Architecture</h1>
+            <p>Production-Grade Multi-Region Network Design with Security & DR</p>
+        </div>
+        
+        <div class="diagram-container">
+            <!-- Region Labels -->
+            <div class="region-label" style="top: 10px; left: 20px;">Canada Central (Primary)</div>
+            <div class="region-label" style="top: 10px; right: 200px;">Canada East (DR)</div>
+            
+            <!-- Virtual WAN Hubs -->
+            <div class="component vwan-hub" style="top: 150px; left: 200px;" data-info="primary-hub">
+                <span>Virtual WAN</span>
+                <span>Hub Primary</span>
+                <small>(Canada Central)</small>
+            </div>
+            
+            <div class="component vwan-hub" style="top: 150px; right: 200px;" data-info="dr-hub">
+                <span>Virtual WAN</span>
+                <span>Hub DR</span>
+                <small>(Canada East)</small>
+            </div>
+            
+            <!-- On-premises Data Center -->
+            <div class="component datacenter" style="top: 80px; left: 50px;" data-info="datacenter">
+                <span>On-Premises</span>
+                <span>Data Center</span>
+                <small>(Canada Central)</small>
+            </div>
+            
+            <!-- Hub VNets -->
+            <div class="component vnet" style="top: 280px; left: 150px;" data-info="hub-vnet">
+                <span>Hub VNet</span>
+                <small>Shared Services</small>
+            </div>
+            
+            <div class="component vnet" style="top: 280px; right: 150px;" data-info="dr-hub-vnet">
+                <span>DR Hub VNet</span>
+                <small>Shared Services</small>
+            </div>
+            
+            <!-- Spoke VNets -->
+            <div class="component vnet" style="top: 400px; left: 80px;" data-info="prod-spoke">
+                <span>Production</span>
+                <span>Spoke VNet</span>
+            </div>
+            
+            <div class="component vnet" style="top: 400px; left: 220px;" data-info="dev-spoke">
+                <span>Dev/Test</span>
+                <span>Spoke VNet</span>
+            </div>
+            
+            <div class="component vnet" style="top: 400px; right: 180px;" data-info="dr-spoke">
+                <span>DR Production</span>
+                <span>Spoke VNet</span>
+            </div>
+            
+            <!-- Remote Sites -->
+            <div class="component remote-site" style="top: 50px; left: 400px;" data-info="remote-site1">
+                <span>Remote Site 1</span>
+                <small>Branch Office</small>
+            </div>
+            
+            <div class="component remote-site" style="top: 50px; left: 520px;" data-info="remote-site2">
+                <span>Remote Site 2</span>
+                <small>Branch Office</small>
+            </div>
+            
+            <div class="component remote-site" style="top: 50px; left: 640px;" data-info="remote-site3">
+                <span>Remote Site 3</span>
+                <small>Branch Office</small>
+            </div>
+            
+            <!-- User Groups -->
+            <div class="component user-group" style="bottom: 150px; left: 50px;" data-info="vendors">
+                <span>Vendors</span>
+                <small>AnyConnect VPN</small>
+            </div>
+            
+            <div class="component user-group" style="bottom: 150px; left: 150px;" data-info="employees">
+                <span>Employees</span>
+                <small>Zscaler</small>
+            </div>
+            
+            <!-- Security Components -->
+            <div class="component security" style="top: 350px; left: 350px;" data-info="firewall">
+                <span>Azure</span>
+                <span>Firewall</span>
+            </div>
+            
+            <div class="component security" style="bottom: 80px; left: 300px;" data-info="zscaler">
+                <span>Zscaler</span>
+                <span>Cloud</span>
+            </div>
+            
+            <!-- Connections would be drawn with JavaScript -->
+            
+            <div class="legend">
+                <h4>Legend</h4>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #3498db;"></div>
+                    <span>Virtual WAN Hub</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #2ecc71;"></div>
+                    <span>Virtual Network</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #e74c3c;"></div>
+                    <span>On-Premises/ExpressRoute</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #f39c12;"></div>
+                    <span>Remote Sites/VPN</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #9b59b6;"></div>
+                    <span>User Groups</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #1abc9c;"></div>
+                    <span>Security Services</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-panel" id="info-panel">
+            <h3>Virtual WAN Architecture Overview</h3>
+            <p><strong>Click on any component above to learn more about its role in the architecture.</strong></p>
+            
+            <h4>🔧 Key Components & Capabilities:</h4>
+            <ul>
+                <li><strong>Virtual WAN Hubs:</strong> Central connectivity points that provide automated routing and transit connectivity</li>
+                <li><strong>ExpressRoute:</strong> Dedicated private connection to your Canada Central datacenter</li>
+                <li><strong>Site-to-Site VPN:</strong> Secure connectivity for remote branch offices</li>
+                <li><strong>Hub-Spoke VNets:</strong> Scalable network topology with centralized services</li>
+                <li><strong>Security Integration:</strong> Azure Firewall and third-party security (Zscaler)</li>
+                <li><strong>Disaster Recovery:</strong> Multi-region setup with automated failover capabilities</li>
+            </ul>
+            
+            <h4>📊 Production Benefits:</h4>
+            <ul>
+                <li>Simplified network management through single pane of glass</li>
+                <li>Automated routing between all connected networks</li>
+                <li>Built-in redundancy and high availability</li>
+                <li>Integrated security with traffic inspection</li>
+                <li>Cost optimization through hub sharing</li>
+                <li>Scalable architecture supporting business growth</li>
+            </ul>
+        </div>
+        
+        <div class="tooltip" id="tooltip"></div>
+    </div>
+
+    <script>
+        const componentInfo = {
+            'primary-hub': {
+                title: 'Virtual WAN Hub - Primary (Canada Central)',
+                content: `
+                    <strong>Core Networking Hub</strong><br>
+                    • Managed Microsoft service providing transit connectivity<br>
+                    • Supports ExpressRoute, VPN Gateway, and VNet connections<br>
+                    • Automatic route propagation and optimal path selection<br>
+                    • Built-in Azure Firewall integration<br>
+                    • Connects to: Data Center (ExpressRoute), Remote Sites (VPN), All VNets<br>
+                    • Regional presence for low latency to local resources
+                `
+            },
+            'dr-hub': {
+                title: 'Virtual WAN Hub - DR (Canada East)',
+                content: `
+                    <strong>Disaster Recovery Hub</strong><br>
+                    • Secondary hub for business continuity<br>
+                    • Automatic failover capabilities<br>
+                    • Synchronized routing tables with primary<br>
+                    • Cross-region connectivity to primary hub<br>
+                    • Supports same services as primary (ExpressRoute/VPN ready)<br>
+                    • Cost-effective standby with rapid activation
+                `
+            },
+            'datacenter': {
+                title: 'On-Premises Data Center',
+                content: `
+                    <strong>Primary Data Center (Canada Central)</strong><br>
+                    • Connected via ExpressRoute for guaranteed bandwidth<br>
+                    • Hosts legacy applications and critical systems<br>
+                    • Private connectivity with 99.95% SLA<br>
+                    • Backup ExpressRoute circuit recommended<br>
+                    • Direct connection to Virtual WAN hub<br>
+                    • Predictable network performance and costs
+                `
+            },
+            'hub-vnet': {
+                title: 'Hub Virtual Network - Shared Services',
+                content: `
+                    <strong>Centralized Shared Services</strong><br>
+                    • Domain Controllers and DNS servers<br>
+                    • Jump boxes and management tools<br>
+                    • Shared file services and backup systems<br>
+                    • Network monitoring and logging<br>
+                    • Connected to Virtual WAN hub for transit routing<br>
+                    • NSGs and route tables for micro-segmentation
+                `
+            },
+            'dr-hub-vnet': {
+                title: 'DR Hub Virtual Network - Shared Services',
+                content: `
+                    <strong>DR Shared Services</strong><br>
+                    • Replica of primary shared services<br>
+                    • Standby Domain Controllers<br>
+                    • DR jump boxes and management tools<br>
+                    • Cross-region backup storage<br>
+                    • Automated failover scripts and runbooks<br>
+                    • Regular DR testing and validation
+                `
+            },
+            'prod-spoke': {
+                title: 'Production Spoke VNet',
+                content: `
+                    <strong>Production Workloads</strong><br>
+                    • Business-critical applications and databases<br>
+                    • High availability with availability sets/zones<br>
+                    • Connected to hub via Virtual WAN<br>
+                    • Strict security policies and monitoring<br>
+                    • Automated backups and disaster recovery<br>
+                    • Performance monitoring and alerting
+                `
+            },
+            'dev-spoke': {
+                title: 'Development/Test Spoke VNet',
+                content: `
+                    <strong>Development & Testing Environment</strong><br>
+                    • Non-production workloads and testing<br>
+                    • Cost-optimized with auto-shutdown policies<br>
+                    • Separate network segmentation<br>
+                    • DevOps pipelines and CI/CD tools<br>
+                    • Development databases and staging<br>
+                    • Sandbox environments for innovation
+                `
+            },
+            'dr-spoke': {
+                title: 'DR Production Spoke VNet',
+                content: `
+                    <strong>Disaster Recovery Production</strong><br>
+                    • Replica of production environment<br>
+                    • Automated failover with minimal RTO/RPO<br>
+                    • Regular DR testing and validation<br>
+                    • Cross-region data replication<br>
+                    • Standby compute resources<br>
+                    • Business continuity procedures
+                `
+            },
+            'remote-site1': {
+                title: 'Remote Branch Office 1',
+                content: `
+                    <strong>Branch Office Network</strong><br>
+                    • Site-to-Site VPN connection to Virtual WAN<br>
+                    • Local internet breakout with security policies<br>
+                    • Branch office users and local servers<br>
+                    • Redundant internet connections<br>
+                    • Local caching and optimization<br>
+                    • Remote management capabilities
+                `
+            },
+            'remote-site2': {
+                title: 'Remote Branch Office 2',
+                content: `
+                    <strong>Branch Office Network</strong><br>
+                    • Encrypted VPN tunnel to Azure<br>
+                    • Branch-specific network policies<br>
+                    • Local file and print services<br>
+                    • Video conferencing and collaboration tools<br>
+                    • Bandwidth optimization and QoS<br>
+                    • 24/7 monitoring and support
+                `
+            },
+            'remote-site3': {
+                title: 'Remote Branch Office 3',
+                content: `
+                    <strong>Branch Office Network</strong><br>
+                    • Secure connectivity to headquarters<br>
+                    • Local network infrastructure<br>
+                    • Branch office applications<br>
+                    • Printer and scanner integration<br>
+                    • Guest network with isolation<br>
+                    • Centralized policy management
+                `
+            },
+            'vendors': {
+                title: 'Vendor Access - AnyConnect VPN',
+                content: `
+                    <strong>Third-Party Vendor Access</strong><br>
+                    • Cisco AnyConnect SSL VPN solution<br>
+                    • Multi-factor authentication required<br>
+                    • Limited access to specific resources<br>
+                    • Session recording and monitoring<br>
+                    • Time-limited access tokens<br>
+                    • Compliance with security policies
+                `
+            },
+            'employees': {
+                title: 'Employee Access - Zscaler',
+                content: `
+                    <strong>Remote Employee Connectivity</strong><br>
+                    • Zscaler Cloud Security Platform<br>
+                    • Zero Trust Network Access (ZTNA)<br>
+                    • Cloud-delivered security services<br>
+                    • Data loss prevention (DLP)<br>
+                    • Advanced threat protection<br>
+                    • User experience optimization
+                `
+            },
+            'firewall': {
+                title: 'Azure Firewall',
+                content: `
+                    <strong>Cloud-Native Network Security</strong><br>
+                    • Stateful firewall with built-in high availability<br>
+                    • Application and network rules<br>
+                    • Threat intelligence integration<br>
+                    • Centralized logging and monitoring<br>
+                    • Integration with Virtual WAN routing<br>
+                    • Automatic scaling and updates
+                `
+            },
+            'zscaler': {
+                title: 'Zscaler Cloud Security',
+                content: `
+                    <strong>Cloud-Delivered Security Service</strong><br>
+                    • Secure web gateway and firewall<br>
+                    • Cloud access security broker (CASB)<br>
+                    • Advanced threat protection<br>
+                    • Data loss prevention (DLP)<br>
+                    • User and entity behavior analytics<br>
+                    • Global cloud infrastructure
+                `
+            }
+        };
+
+        // Add click event listeners to components
+        document.querySelectorAll('.component').forEach(component => {
+            component.addEventListener('click', function() {
+                const infoKey = this.getAttribute('data-info');
+                const info = componentInfo[infoKey];
+                
+                if (info) {
+                    const infoPanel = document.getElementById('info-panel');
+                    infoPanel.innerHTML = `
+                        <h3>${info.title}</h3>
+                        <div style="line-height: 1.6;">${info.content}</div>
+                    `;
+                }
+            });
+
+            // Add hover tooltip
+            component.addEventListener('mouseenter', function(e) {
+                const infoKey = this.getAttribute('data-info');
+                const info = componentInfo[infoKey];
+                
+                if (info) {
+                    const tooltip = document.getElementById('tooltip');
+                    tooltip.innerHTML = `<strong>${info.title}</strong>`;
+                    tooltip.style.display = 'block';
+                    tooltip.style.left = e.pageX + 10 + 'px';
+                    tooltip.style.top = e.pageY - 30 + 'px';
+                }
+            });
+
+            component.addEventListener('mouseleave', function() {
+                const tooltip = document.getElementById('tooltip');
+                tooltip.style.display = 'none';
+            });
+        });
+
+        // Draw connections (simplified visual representation)
+        function drawConnection(from, to, type) {
+            const connection = document.createElement('div');
+            connection.className = `connection ${type}`;
+            // This would require more complex calculations for proper line drawing
+            // For simplicity, we're showing the structure conceptually
+        }
+    </script>
+</body>
+</html>
