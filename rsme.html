@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kamal Kumar - Resume</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .resume-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 50px 60px 40px;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+        }
+
+        .name {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .title {
+            font-size: 16px;
+            font-weight: 400;
+            opacity: 0.95;
+            line-height: 1.8;
+            max-width: 700px;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 25px;
+            font-size: 14px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .contact-item::before {
+            content: '•';
+            color: #667eea;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 50px 60px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #764ba2;
+        }
+
+        .profile-text {
+            color: #444;
+            text-align: justify;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .profile-text li {
+            margin-bottom: 10px;
+            padding-left: 5px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .skill-item {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 12px 18px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e3c72;
+            border-left: 4px solid #667eea;
+        }
+
+        .soft-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .soft-skill-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .certs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 12px;
+        }
+
+        .cert-item {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            border-radius: 6px;
+            border-left: 4px solid #764ba2;
+            font-size: 14px;
+        }
+
+        .cert-name {
+            font-weight: 700;
+            color: #1e3c72;
+        }
+
+        .cert-org {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .achievements-list {
+            list-style: none;
+        }
+
+        .achievement-item {
+            padding: 12px 0 12px 30px;
+            position: relative;
+            color: #444;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .achievement-item::before {
+            content: '★';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-size: 18px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -36px;
+            top: 5px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #667eea;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px #667eea;
+        }
+
+        .job-header {
+            margin-bottom: 12px;
+        }
+
+        .job-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e3c72;
+        }
+
+        .job-meta {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .job-responsibilities {
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        .job-responsibilities li {
+            padding: 6px 0 6px 20px;
+            position: relative;
+            color: #444;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .job-responsibilities li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .tech-skills-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .tech-category {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+
+        .tech-category-title {
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .tech-category-content {
+            color: #555;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .education-item {
+            background: #f8f9fa;
+            padding: 18px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border-left: 4px solid #764ba2;
+        }
+
+        .education-degree {
+            font-weight: 700;
+            color: #1e3c72;
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+
+        .education-details {
+            color: #666;
+            font-size: 14px;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .resume-container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content, .header {
+                padding: 30px 30px;
+            }
+            .name {
+                font-size: 32px;
+            }
+            .certs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-container">
+        <div class="header">
+            <h1 class="name">Kamal Kumar</h1>
+            <p class="title">Lead Cloud Platform Engineer | Senior DevOps & Cloud Lead | Transformation Leader | Enterprise Cloud & Automation Strategist</p>
+            <div class="contact-info">
+                <div class="contact-item">Civil Lines, Delhi, India</div>
+                <div class="contact-item">+91 8800550044</div>
+                <div class="contact-item">kamal.dogra@outlook.com</div>
+                <div class="contact-item">linkedin.com/in/kamal18</div>
+                <div class="contact-item">kamal.sh</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2 class="section-title">Profile Summary</h2>
+                <ul class="profile-text">
+                    <li>Senior Cloud & DevOps Lead with extensive experience delivering enterprise-scale cloud transformations, application modernization, and platform standardization initiatives.</li>
+                    <li>Proven expertise in building scalable, resilient and secure cloud environments leveraging Azure, AWS, Kubernetes, and Infrastructure-as-Code frameworks.</li>
+                    <li>Skilled in defining and implementing cloud governance models, compliance frameworks, and operational best practices to ensure consistency, security, and efficiency.</li>
+                    <li>Strong background in driving CI/CD automation, GitOps workflows, and container orchestration, significantly improving deployment velocity and operational reliability.</li>
+                    <li>Experienced in cost optimization and resource planning for cloud infrastructure, delivering measurable efficiencies and ROI across large-scale projects.</li>
+                    <li>Led & mentored cross-functional teams, fostering technical excellence, knowledge sharing & high-performance culture.</li>
+                    <li>Collaborative strategist with experience engaging stakeholders across business and technology units to align cloud initiatives with organizational goals.</li>
+                    <li>Recognized for introducing innovative cloud solutions, process improvements, and standardization practices that enhance system performance, scalability, and security.</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Core Competencies</h2>
+                <div class="skills-grid">
+                    <div class="skill-item">Cloud Architecture & Migration</div>
+                    <div class="skill-item">Infrastructure as Code (IaC)</div>
+                    <div class="skill-item">Kubernetes & Container Orchestration</div>
+                    <div class="skill-item">CI/CD & DevOps Automation</div>
+                    <div class="skill-item">Cloud Security & Compliance</div>
+                    <div class="skill-item">FinOps & Cost Optimization</div>
+                    <div class="skill-item">Monitoring & Observability</div>
+                    <div class="skill-item">Programming & Scripting</div>
+                    <div class="skill-item">Cloud Modernization & Re-platforming</div>
+                    <div class="skill-item">Delivery Leadership</div>
+                    <div class="skill-item">Team Leadership & Mentorship</div>
+                    <div class="skill-item">Enterprise Governance/Standardization</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Soft Skills</h2>
+                <div class="soft-skills">
+                    <div class="soft-skill-tag">Change Agent</div>
+                    <div class="soft-skill-tag">Collaborator</div>
+                    <div class="soft-skill-tag">Communicator</div>
+                    <div class="soft-skill-tag">Innovator</div>
+                    <div class="soft-skill-tag">Planner</div>
+                    <div class="soft-skill-tag">Analytical</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Certifications</h2>
+                <div class="certs-grid">
+                    <div class="cert-item">
+                        <div class="cert-name">Azure DevOps Expert (AZ-400)</div>
+                        <div class="cert-org">Microsoft, 2024</div>
+                    </div>
+                    <div class="cert-item">
+                        <div class="cert-name">HashiCorp Terraform Associate</div>
+                        <div class="cert-org">HashiCorp, 2024</div>
+                    </div>
+                    <div class="cert-item">
+                        <div class="cert-name">Certified Kubernetes Administrator (CKA)</div>
+                        <div class="cert-org">CNCF, 2024</div>
+                    </div>
+                    <div class="cert-item">
+                        <div class="cert-name">Azure Security Engineer Associate (AZ-500)</div>
+                        <div class="cert-org">Microsoft, 2023</div>
+                    </div>
+                    <div class="cert-item">
+                        <div class="cert-name">Azure Network Engineer Associate (AZ-700)</div>
+                        <div class="cert-org">Microsoft, 2023</div>
+                    </div>
+                    <div class="cert-item">
+                        <div class="cert-name">Azure Administrator Associate (AZ-104)</div>
+                        <div class="cert-org">Microsoft, 2023</div>
+                    </div>
+                    <div class="cert-item">
+                        <div class="cert-name">Azure Developer Associate (AZ-204)</div>
+                        <div class="cert-org">Microsoft, 2022</div>
+                    </div>
+                    <div class="cert-item">
+                        <div class="cert-name">Solutions Architect Technologies (AZ-300)</div>
+                        <div class="cert-org">Microsoft, 2021</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Key Achievements</h2>
+                <ul class="achievements-list">
+                    <li class="achievement-item">Executed strategic cloud optimization and FinOps initiatives across multiple teams, driving over $1.4M in annual savings.</li>
+                    <li class="achievement-item">Delivered 99.99% system reliability, supporting 100K+ daily users with zero critical downtime.</li>
+                    <li class="achievement-item">Mentored 15+ engineers, with 90% achieving promotions and advanced cloud/DevOps certifications.</li>
+                    <li class="achievement-item">EPAM-certified interviewer, successfully conducting 150+ technical interviews for cloud and DevOps roles.</li>
+                    <li class="achievement-item">Led 50+ internal training sessions for EPAM and LSEG teams, enhancing technical skill adoption.</li>
+                    <li class="achievement-item">EPAM Excellence Award (3x): Recognized three times for outstanding performance, innovation, and impactful delivery.</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Work Experience</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="job-header">
+                            <div class="job-title">McCain Foods – Cloud Engineer (A4 – Lead)</div>
+                            <div class="job-meta">Aug 2025 – Present | Gurugram, India</div>
+                        </div>
+                        <ul class="job-responsibilities">
+                            <li>Leading cloud adoption initiatives, architecting secure, scalable, and resilient cloud environments to enhance organizational IT agility.</li>
+                            <li>Driving the migration of 70+ on-premise applications to cloud platforms, ensuring minimal disruption and optimizing performance, cost, and security.</li>
+                            <li>Modernizing critical business applications, integrating DevOps best practices for continuous delivery and operational excellence.</li>
+                            <li>Strengthening cloud security posture by implementing governance frameworks, monitoring solutions, and risk mitigation strategies aligned with industry standards.</li>
+                        </ul>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="job-header">
+                            <div class="job-title">EPAM Systems – Cloud Migration & DevOps Lead</div>
+                            <div class="job-meta">Jun 2022 – Aug 2025 | Gurugram, Haryana</div>
+                        </div>
+                        <ul class="job-responsibilities">
+                            <li>Directed zero-downtime migration of 30-component Java/C++ monoliths to AKS, supporting 100K+ daily users while ensuring high availability and performance.</li>
+                            <li>Delivered 30+ POCs to reduce migration risk by 80% and implemented FinOps strategies, achieving $1.4M annual savings (25% cost reduction).</li>
+                            <li>Engineered end-to-end GitLab CI/CD pipelines integrated with ArgoCD and Terraform, reducing provisioning time by 70% and deployment duration by 94%.</li>
+                            <li>Onboarded 200+ applications across 15 business units using Azure Landing Zones and hub-spoke architecture.</li>
+                            <li>Strengthened organizational security posture by 85% through Azure Policy enforcement, Zero Trust principles, and standardization of 50+ IaC templates.</li>
+                            <li>Mentored 8 engineers, increasing team velocity by 40% and accelerating application onboarding from 3 weeks to 3 days.</li>
+                        </ul>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="job-header">
+                            <div class="job-title">ITC Infotech – DevOps Engineer</div>
+                            <div class="job-meta">Oct 2018 – Jun 2022 | Gurugram, Haryana</div>
+                        </div>
+                        <ul class="job-responsibilities">
+                            <li>Designed & deployed 50+ Terraform modules across 15+ environments, standardizing infrastructure provisioning.</li>
+                            <li>Automated over 50 workflows using Python and PowerShell, increasing operational efficiency and productivity by 60%.</li>
+                            <li>Developed 40+ Azure DevOps pipelines for Java apps, accelerating release cycles by 45% and ensuring deployment quality.</li>
+                            <li>Implemented container scanning, vulnerability management & Azure Policy enforcement for 100+ regulatory requirements, reducing security incidents by 40%.</li>
+                        </ul>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="job-header">
+                            <div class="job-title">Collabera Technologies – Systems Engineer</div>
+                            <div class="job-meta">Apr 2017 – Oct 2018 | New Delhi, India</div>
+                        </div>
+                        <ul class="job-responsibilities">
+                            <li>Ensured 99.9% uptime across 200+ branch locations through proactive monitoring and maintenance of critical systems.</li>
+                            <li>Deployed and configured 100+ hardened Windows and Linux servers, maintaining high security and performance standards.</li>
+                            <li>Led infrastructure setup for 50+ new branch offices, enabling seamless operational scalability and continuity.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Technical Skills</h2>
+                <div class="tech-skills-grid">
+                    <div class="tech-category">
+                        <div class="tech-category-title">Cloud Platforms</div>
+                        <div class="tech-category-content">Microsoft Azure (AKS, Functions, App Service, Storage, SQL Database, PostgreSQL, Cosmos DB, Azure OpenAI, Machine Learning), AWS (EKS)</div>
+                    </div>
+                    <div class="tech-category">
+                        <div class="tech-category-title">Containers & Orchestration</div>
+                        <div class="tech-category-content">Docker, Containerd, Kubernetes (CKA), Azure Container Registry, Container Instances, Container Apps, Service Mesh, Istio</div>
+                    </div>
+                    <div class="tech-category">
+                        <div class="tech-category-title">DevOps & CI/CD</div>
+                        <div class="tech-category-content">Azure DevOps (ADO), GitHub, Git, Jenkins, GitLab CI/CD, GitHub Actions, ArgoCD, Helm Charts, Kustomize, Flux</div>
+                    </div>
+                    <div class="tech-category">
+                        <div class="tech-category-title">Security & Compliance</div>
+                        <div class="tech-category-content">Cloud security enhancement, Zero Trust, Azure Policy, Microsoft Defender, Key Vault, Privileged Identity Management, RBAC, SOC 2, GDPR</div>
+                    </div>
+                    <div class="tech-category">
+                        <div class="tech-category-title">Monitoring & Observability</div>
+                        <div class="tech-category-content">Azure Monitor, Log Analytics, Application Insights, Prometheus, Grafana, Datadog, Splunk</div>
+                    </div>
+                    <div class="tech-category">
+                        <div class="tech-category-title">Infrastructure as Code (IaC)</div>
+                        <div class="tech-category-content">Terraform, ARM Templates, Bicep, Pulumi, CloudFormation, Ansible</div>
+                    </div>
+                    <div class="tech-category">
+                        <div class="tech-category-title">Programming & Automation</div>
+                        <div class="tech-category-content">Python, PowerShell, Bash, Go, Azure CLI, REST APIs, ARM/Bicep, YAML/JSON</div>
+                    </div>
+                    <div class="tech-category">
+                        <div class="tech-category-title">Networking</div>
+                        <div class="tech-category-content">Hub-and-Spoke, Azure ExpressRoute, VPN Gateway, Application Gateway, Load Balancers, Azure Firewall, NSGs</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Education</h2>
+                <div class="education-item">
+                    <div class="education-degree">Master of Computer Applications (MCA)</div>
+                    <div class="education-details">Jain University, Bangalore | June 2021 – July 2023 | CGPA: 8.7</div>
+                </div>
+                <div class="education-item">
+                    <div class="education-degree">Bachelor of Computer Applications (BCA)</div>
+                    <div class="education-details">Sikkim Manipal University | June 2013 – July 2016 | CGPA: 6.3</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
