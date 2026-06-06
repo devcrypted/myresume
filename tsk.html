@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flow - Task Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --primary: 234 179 8;
+        }
+        
+        .tail-container {
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        
+        .logo-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .task-item {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .task-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05);
+        }
+
+        .modal {
+            animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        @keyframes modalPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .sidebar-link {
+            transition: all 0.2s ease;
+        }
+        
+        .sidebar-link.active {
+            background-color: rgb(234 179 8 / 0.1);
+            color: rgb(234 179 8);
+            border-radius: 9999px;
+        }
+
+        .kanban-column {
+            min-height: 500px;
+        }
+
+        .due-soon {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="tail-container bg-zinc-950 text-zinc-200">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="w-72 bg-zinc-900 border-r border-zinc-800 flex flex-col">
+            <!-- Logo -->
+            <div class="p-6 border-b border-zinc-800">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-yellow-400 rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-check-double text-zinc-900 text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="logo-font text-3xl font-semibold tracking-tighter text-white">flow</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Add -->
+            <div class="p-4">
+                <button onclick="showNewTaskModal()" 
+                        class="w-full bg-yellow-400 hover:bg-yellow-300 transition-colors text-zinc-900 font-semibold py-3 px-4 rounded-3xl flex items-center justify-center gap-2 shadow-lg shadow-yellow-500/30">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>New Task</span>
+                </button>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex-1 overflow-y-auto px-3 py-2">
+                <nav class="space-y-1">
+                    <a href="#" onclick="switchView('inbox')" class="sidebar-link active flex items-center gap-3 px-4 py-3 text-sm font-medium text-zinc-300 hover:text-white" id="nav-inbox">
+                        <i class="fa-solid fa-inbox w-5 h-5"></i>
+                        <span>Inbox</span>
+                    </a>
+                    <a href="#" onclick="switchView('today')" class="sidebar-link flex items-center gap-3 px-4 py-3 text-sm font-medium text-zinc-300 hover:text-white" id="nav-today">
+                        <i class="fa-solid fa-calendar-day w-5 h-5"></i>
+                        <span>Today</span>
+                        <span id="today-count" class="ml-auto bg-zinc-800 text-xs px-2 py-0.5 rounded-full"></span>
+                    </a>
+                    <a href="#" onclick="switchView('upcoming')" class="sidebar-link flex items-center gap-3 px-4 py-3 text-sm font-medium text-zinc-300 hover:text-white" id="nav-upcoming">
+                        <i class="fa-solid fa-calendar w-5 h-5"></i>
+                        <span>Upcoming</span>
+                    </a>
+                    <a href="#" onclick="switchView('flagged')" class="sidebar-link flex items-center gap-3 px-4 py-3 text-sm font-medium text-zinc-300 hover:text-white" id="nav-flagged">
+                        <i class="fa-solid fa-flag w-5 h-5"></i>
+                        <span>Flagged</span>
+                        <span id="flagged-count" class="ml-auto bg-zinc-800 text-xs px-2 py-0.5 rounded-full"></span>
+                    </a>
+                    <a href="#" onclick="switchView('completed')" class="sidebar-link flex items-center gap-3 px-4 py-3 text-sm font-medium text-zinc-300 hover:text-white" id="nav-completed">
+                        <i class="fa-solid fa-check-circle w-5 h-5"></i>
+                        <span>Completed</span>
+                    </a>
+                </nav>
+
+                <!-- Projects -->
+                <div class="mt-8 px-4">
+                    <div class="flex items-center justify-between text-xs uppercase tracking-widest text-zinc-500 mb-3">
+                        <span>Projects</span>
+                        <button onclick="createNewProject()" class="hover:text-yellow-400">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                    <div id="projects-list" class="space-y-1 text-sm"></div>
+                </div>
+
+                <!-- Tags -->
+                <div class="mt-8 px-4">
+                    <div class="flex items-center justify-between text-xs uppercase tracking-widest text-zinc-500 mb-3">
+                        <span>Tags</span>
+                    </div>
+                    <div id="tags-list" class="flex flex-wrap gap-2"></div>
+                </div>
+            </div>
+
+            <!-- Bottom -->
+            <div class="p-4 border-t border-zinc-800 mt-auto">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-zinc-700 rounded-2xl flex items-center justify-center text-lg">👤</div>
+                    <div class="flex-1">
+                        <div class="text-sm font-medium">Alex Rivera</div>
+                        <div class="text-xs text-zinc-500">Free • Local</div>
+                    </div>
+                    <button onclick="toggleDarkMode()" class="text-zinc-400 hover:text-white">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col">
+            <!-- Top Bar -->
+            <div class="h-14 border-b border-zinc-800 bg-zinc-900 px-6 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleSidebar()" class="lg:hidden text-zinc-400">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                    <div id="view-title" class="font-semibold text-xl">Inbox</div>
+                </div>
+                
+                <div class="flex items-center gap-6">
+                    <div class="relative">
+                        <input id="search-input" 
+                               onkeyup="if(event.key === 'Enter') filterTasks()"
+                               type="text" 
+                               placeholder="Search tasks..." 
+                               class="bg-zinc-800 border border-zinc-700 focus:border-yellow-400 w-80 pl-10 py-2 rounded-3xl text-sm focus:outline-none">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-3 text-zinc-500"></i>
+                    </div>
+                    
+                    <div class="flex items-center gap-2 text-sm">
+                        <button onclick="switchView('kanban')" 
+                                class="px-4 py-1.5 rounded-3xl hover:bg-zinc-800 flex items-center gap-2">
+                            <i class="fa-solid fa-columns"></i>
+                            <span class="hidden md:inline">Board</span>
+                        </button>
+                    </div>
+                    
+                    <button onclick="exportData()" 
+                            class="text-zinc-400 hover:text-white px-3 py-2">
+                        <i class="fa-solid fa-download"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tasks Area -->
+            <div class="flex-1 overflow-auto p-6" id="main-content">
+                <!-- List View -->
+                <div id="list-view">
+                    <div class="max-w-3xl mx-auto">
+                        <div id="tasks-list" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- Kanban View -->
+                <div id="kanban-view" class="hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 overflow-x-auto pb-8">
+                        <!-- Todo Column -->
+                        <div>
+                            <div class="flex items-center gap-2 mb-4">
+                                <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                <h3 class="font-semibold">To Do</h3>
+                            </div>
+                            <div id="kanban-todo" class="kanban-column space-y-3"></div>
+                        </div>
+                        
+                        <!-- In Progress -->
+                        <div>
+                            <div class="flex items-center gap-2 mb-4">
+                                <div class="w-3 h-3 bg-amber-500 rounded-full"></div>
+                                <h3 class="font-semibold">In Progress</h3>
+                            </div>
+                            <div id="kanban-progress" class="kanban-column space-y-3"></div>
+                        </div>
+                        
+                        <!-- Done -->
+                        <div>
+                            <div class="flex items-center gap-2 mb-4">
+                                <div class="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                                <h3 class="font-semibold">Done</h3>
+                            </div>
+                            <div id="kanban-done" class="kanban-column space-y-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Bar -->
+            <div class="h-11 bg-zinc-900 border-t border-zinc-800 text-xs flex items-center px-6 text-zinc-500 justify-between">
+                <div id="stats" class="flex items-center gap-6"></div>
+                <div class="flex items-center gap-4">
+                    <span onclick="clearCompleted()" class="cursor-pointer hover:text-red-400">Clear completed</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Detail Modal -->
+    <div id="task-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+        <div class="modal bg-zinc-900 w-full max-w-lg mx-4 rounded-3xl overflow-hidden">
+            <!-- Modal Header -->
+            <div class="px-6 py-5 border-b border-zinc-700 flex items-center justify-between">
+                <input id="modal-task-title" 
+                       class="bg-transparent text-xl font-semibold focus:outline-none flex-1"
+                       placeholder="Task title...">
+                <button onclick="closeModal()" class="text-zinc-400 hover:text-white">
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-6">
+                <!-- Due Date -->
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-calendar text-yellow-400 w-5"></i>
+                    <input id="modal-due-date" type="date" 
+                           class="bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-2 text-sm focus:outline-none focus:border-yellow-400">
+                    <select id="modal-priority" 
+                            class="bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-2 text-sm focus:outline-none">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                
+                <!-- Description -->
+                <div>
+                    <textarea id="modal-description" rows="4"
+                              class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-4 focus:outline-none focus:border-yellow-400 resize-none"
+                              placeholder="Add description..."></textarea>
+                </div>
+                
+                <!-- Subtasks -->
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm font-medium flex items-center gap-2">
+                            <i class="fa-solid fa-list-check"></i> Subtasks
+                        </span>
+                        <button onclick="addSubtask()" 
+                                class="text-xs bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded-2xl flex items-center gap-1">
+                            <i class="fa-solid fa-plus"></i> Add
+                        </button>
+                    </div>
+                    <div id="subtasks-list" class="space-y-2 max-h-48 overflow-auto"></div>
+                </div>
+                
+                <!-- Tags -->
+                <div>
+                    <span class="text-sm font-medium mb-2 block">Tags</span>
+                    <div class="flex flex-wrap gap-2" id="modal-tags"></div>
+                    <div class="mt-3 flex gap-2">
+                        <input id="new-tag-input" 
+                               onkeypress="if(event.key === 'Enter') addTagToTask()"
+                               class="flex-1 bg-zinc-800 border border-zinc-700 rounded-3xl px-4 py-2 text-sm focus:outline-none"
+                               placeholder="Add tag...">
+                        <button onclick="addTagToTask()" 
+                                class="px-5 bg-zinc-700 hover:bg-zinc-600 rounded-3xl">Add</button>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-3 pt-4 border-t border-zinc-700">
+                    <button onclick="toggleFlagCurrentTask()" 
+                            id="modal-flag-btn"
+                            class="flex-1 flex items-center justify-center gap-2 py-3 border border-zinc-700 hover:border-yellow-400 rounded-3xl">
+                        <i class="fa-solid fa-flag"></i>
+                        <span>Flag</span>
+                    </button>
+                    <button onclick="saveTaskFromModal()" 
+                            class="flex-1 bg-yellow-400 text-zinc-900 py-3 rounded-3xl font-semibold hover:bg-yellow-300">
+                        Save Task
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Project Modal -->
+    <div id="project-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+        <div class="modal bg-zinc-900 w-full max-w-md mx-4 rounded-3xl p-6">
+            <h3 class="text-lg font-semibold mb-4">New Project</h3>
+            <input id="new-project-name" type="text" 
+                   class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 focus:outline-none focus:border-yellow-400"
+                   placeholder="Project name">
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeProjectModal()" 
+                        class="flex-1 py-3 text-zinc-400 border border-zinc-700 rounded-3xl">Cancel</button>
+                <button onclick="saveNewProject()" 
+                        class="flex-1 py-3 bg-yellow-400 text-zinc-900 rounded-3xl font-semibold">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Model
+        let tasks = [];
+        let projects = [];
+        let currentView = 'inbox';
+        let currentTaskId = null;
+        let currentProjectFilter = null;
+        
+        // Tailwind script
+        function initTailwind() {
+            // Already initialized via CDN
+        }
+        
+        // Load from localStorage
+        function loadData() {
+            const savedTasks = localStorage.getItem('flow_tasks');
+            if (savedTasks) tasks = JSON.parse(savedTasks);
+            
+            const savedProjects = localStorage.getItem('flow_projects');
+            if (savedProjects) projects = JSON.parse(savedProjects);
+            
+            if (projects.length === 0) {
+                projects = [
+                    { id: 'p1', name: 'Personal', color: 'yellow' },
+                    { id: 'p2', name: 'Work', color: 'blue' }
+                ];
+                saveProjects();
+            }
+            
+            if (tasks.length === 0) {
+                // Demo tasks
+                tasks = [
+                    {
+                        id: 't1',
+                        title: "Finish quarterly report",
+                        description: "Include all metrics and projections",
+                        dueDate: "2026-06-08",
+                        priority: "high",
+                        tags: ["work", "report"],
+                        completed: false,
+                        flagged: true,
+                        projectId: "p2",
+                        subtasks: [
+                            { id: "st1", title: "Collect data", completed: true },
+                            { id: "st2", title: "Write summary", completed: false }
+                        ],
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 't2',
+                        title: "Grocery shopping",
+                        description: "",
+                        dueDate: "2026-06-07",
+                        priority: "medium",
+                        tags: ["personal"],
+                        completed: false,
+                        flagged: false,
+                        projectId: "p1",
+                        subtasks: [],
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                saveTasks();
+            }
+        }
+        
+        function saveTasks() {
+            localStorage.setItem('flow_tasks', JSON.stringify(tasks));
+        }
+        
+        function saveProjects() {
+            localStorage.setItem('flow_projects', JSON.stringify(projects));
+        }
+        
+        // Render tasks
+        function renderTasks(filteredTasks) {
+            const container = document.getElementById('tasks-list');
+            container.innerHTML = '';
+            
+            if (filteredTasks.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-20 text-zinc-500">
+                        <i class="fa-solid fa-clipboard text-6xl mb-4 opacity-30"></i>
+                        <p class="text-lg">No tasks here yet</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            filteredTasks.forEach(task => {
+                const dueDate = task.dueDate ? new Date(task.dueDate) : null;
+                const isOverdue = dueDate && dueDate < new Date() && !task.completed;
+                
+                const taskHTML = `
+                    <div onclick="openTaskModal('${task.id}')" 
+                         class="task-item bg-zinc-900 border border-zinc-800 hover:border-yellow-400/30 rounded-3xl p-5 flex gap-4 group cursor-pointer">
+                        <div class="pt-1">
+                            <input type="checkbox" 
+                                   ${task.completed ? 'checked' : ''}
+                                   onchange="toggleComplete('${task.id}', event)"
+                                   class="w-5 h-5 accent-yellow-400 cursor-pointer">
+                        </div>
+                        
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between">
+                                <div class="flex-1">
+                                    <div class="\( {task.completed ? 'line-through text-zinc-500' : ''} font-medium"> \){task.title}</div>
+                                    \( {task.description ? `<div class="text-sm text-zinc-400 mt-1 line-clamp-2"> \){task.description}</div>` : ''}
+                                </div>
+                                
+                                ${task.flagged ? `
+                                <span onclick="event.stopImmediatePropagation(); toggleFlag('${task.id}');" 
+                                      class="text-yellow-400">
+                                    <i class="fa-solid fa-flag"></i>
+                                </span>` : ''}
+                            </div>
+                            
+                            <div class="flex items-center gap-4 mt-4 text-xs">
+                                ${task.dueDate ? `
+                                <div class="${isOverdue ? 'text-red-400 due-soon' : 'text-zinc-400'} flex items-center gap-1">
+                                    <i class="fa-solid fa-calendar"></i>
+                                    <span>${formatDate(task.dueDate)}</span>
+                                </div>` : ''}
+                                
+                                ${task.priority === 'high' ? `
+                                <div class="flex items-center gap-1 text-red-400">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                </div>` : ''}
+                                
+                                ${task.tags && task.tags.length ? `
+                                <div class="flex gap-1">
+                                    ${task.tags.map(tag => `
+                                        <span onclick="event.stopImmediatePropagation(); filterByTag('${tag}')" 
+                                              class="bg-zinc-800 text-zinc-400 px-3 py-0.5 rounded-3xl text-[10px]">${tag}</span>
+                                    `).join('')}
+                                </div>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += taskHTML;
+            });
+        }
+        
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        
+        function getTodayTasks() {
+            const today = new Date().toISOString().split('T')[0];
+            return tasks.filter(t => !t.completed && t.dueDate === today);
+        }
+        
+        function getFlaggedTasks() {
+            return tasks.filter(t => !t.completed && t.flagged);
+        }
+        
+        function getUpcomingTasks() {
+            const today = new Date();
+            return tasks.filter(t => {
+                if (t.completed || !t.dueDate) return false;
+                return new Date(t.dueDate) >= today;
+            }).sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+        }
+        
+        function switchView(view) {
+            currentView = view;
+            currentProjectFilter = null;
+            
+            // Update active nav
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.id === `nav-${view}`) link.classList.add('active');
+            });
+            
+            document.getElementById('view-title').textContent = 
+                view === 'inbox' ? 'Inbox' : 
+                view === 'today' ? 'Today' :
+                view === 'upcoming' ? 'Upcoming' :
+                view === 'flagged' ? 'Flagged' :
+                view === 'completed' ? 'Completed' : 'All Tasks';
+            
+            let filtered = [];
+            
+            if (view === 'today') {
+                filtered = getTodayTasks();
+            } else if (view === 'flagged') {
+                filtered = getFlaggedTasks();
+            } else if (view === 'upcoming') {
+                filtered = getUpcomingTasks();
+            } else if (view === 'completed') {
+                filtered = tasks.filter(t => t.completed);
+            } else {
+                // inbox - all active
+                filtered = tasks.filter(t => !t.completed);
+            }
+            
+            renderTasks(filtered);
+            updateCounts();
+        }
+        
+        function updateCounts() {
+            const todayCountEl = document.getElementById('today-count');
+            const flaggedCountEl = document.getElementById('flagged-count');
+            
+            todayCountEl.textContent = getTodayTasks().length;
+            flaggedCountEl.textContent = getFlaggedTasks().length;
+        }
+        
+        function openTaskModal(taskId) {
+            currentTaskId = taskId;
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+            
+            document.getElementById('modal-task-title').value = task.title || '';
+            document.getElementById('modal-due-date').value = task.dueDate || '';
+            document.getElementById('modal-priority').value = task.priority || 'medium';
+            document.getElementById('modal-description').value = task.description || '';
+            
+            // Render subtasks
+            renderSubtasks(task);
+            
+            // Render tags
+            renderModalTags(task);
+            
+            // Flag button
+            const flagBtn = document.getElementById('modal-flag-btn');
+            flagBtn.innerHTML = task.flagged ? 
+                `<i class="fa-solid fa-flag"></i><span>Unflag</span>` : 
+                `<i class="fa-solid fa-flag"></i><span>Flag</span>`;
+            
+            document.getElementById('task-modal').classList.remove('hidden');
+            document.getElementById('modal-task-title').focus();
+        }
+        
+        function closeModal() {
+            document.getElementById('task-modal').classList.add('hidden');
+            currentTaskId = null;
+        }
+        
+        function saveTaskFromModal() {
+            const title = document.getElementById('modal-task-title').value.trim();
+            if (!title && currentTaskId) {
+                closeModal();
+                return;
+            }
+            
+            let task;
+            
+            if (currentTaskId) {
+                task = tasks.find(t => t.id === currentTaskId);
+            } else {
+                task = {
+                    id: 't' + Date.now(),
+                    completed: false,
+                    flagged: false,
+                    tags: [],
+                    subtasks: [],
+                    createdAt: new Date().toISOString()
+                };
+                tasks.unshift(task);
+            }
+            
+            task.title = title || 'Untitled task';
+            task.dueDate = document.getElementById('modal-due-date').value;
+            task.priority = document.getElementById('modal-priority').value;
+            task.description = document.getElementById('modal-description').value;
+            
+            saveTasks();
+            closeModal();
+            refreshCurrentView();
+        }
+        
+        function showNewTaskModal() {
+            currentTaskId = null;
+            document.getElementById('modal-task-title').value = '';
+            document.getElementById('modal-due-date').value = '';
+            document.getElementById('modal-priority').value = 'medium';
+            document.getElementById('modal-description').value = '';
+            document.getElementById('subtasks-list').innerHTML = '';
+            document.getElementById('modal-tags').innerHTML = '';
+            
+            document.getElementById('task-modal').classList.remove('hidden');
+        }
+        
+        function toggleComplete(taskId, e) {
+            e.stopImmediatePropagation();
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                task.completed = !task.completed;
+                saveTasks();
+                refreshCurrentView();
+            }
+        }
+        
+        function toggleFlag(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                task.flagged = !task.flagged;
+                saveTasks();
+                refreshCurrentView();
+            }
+        }
+        
+        function toggleFlagCurrentTask() {
+            if (!currentTaskId) return;
+            const task = tasks.find(t => t.id === currentTaskId);
+            if (task) {
+                task.flagged = !task.flagged;
+                const flagBtn = document.getElementById('modal-flag-btn');
+                flagBtn.innerHTML = task.flagged ? 
+                    `<i class="fa-solid fa-flag"></i><span>Unflag</span>` : 
+                    `<i class="fa-solid fa-flag"></i><span>Flag</span>`;
+                saveTasks();
+            }
+        }
+        
+        function renderSubtasks(task) {
+            const container = document.getElementById('subtasks-list');
+            container.innerHTML = '';
+            
+            task.subtasks.forEach((sub, index) => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center gap-3 bg-zinc-800 rounded-2xl px-4 py-3';
+                div.innerHTML = `
+                    <input type="checkbox" ${sub.completed ? 'checked' : ''} 
+                           onchange="toggleSubtask(${index})" class="accent-yellow-400">
+                    <input type="text" value="${sub.title}" 
+                           onblur="updateSubtaskTitle(${index}, this.value)"
+                           class="flex-1 bg-transparent focus:outline-none">
+                    <button onclick="deleteSubtask(${index})" class="text-red-400 hover:text-red-500">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        function addSubtask() {
+            if (!currentTaskId) return;
+            const task = tasks.find(t => t.id === currentTaskId);
+            if (!task) return;
+            
+            task.subtasks.push({
+                id: 'st' + Date.now(),
+                title: 'New subtask',
+                completed: false
+            });
+            
+            renderSubtasks(task);
+            saveTasks();
+        }
+        
+        function toggleSubtask(index) {
+            if (!currentTaskId) return;
+            const task = tasks.find(t => t.id === currentTaskId);
+            if (task && task.subtasks[index]) {
+                task.subtasks[index].completed = !task.subtasks[index].completed;
+                saveTasks();
+            }
+        }
+        
+        function updateSubtaskTitle(index, newTitle) {
+            if (!currentTaskId) return;
+            const task = tasks.find(t => t.id === currentTaskId);
+            if (task && task.subtasks[index]) {
+                task.subtasks[index].title = newTitle;
+                saveTasks();
+            }
+        }
+        
+        function deleteSubtask(index) {
+            if (!currentTaskId) return;
+            const task = tasks.find(t => t.id === currentTaskId);
+            if (task) {
+                task.subtasks.splice(index, 1);
+                renderSubtasks(task);
+                saveTasks();
+            }
+        }
+        
+        function renderModalTags(task) {
+            const container = document.getElementById('modal-tags');
+            container.innerHTML = '';
+            
+            (task.tags || []).forEach((tag, i) => {
+                const pill = document.createElement('div');
+                pill.className = 'bg-zinc-800 text-xs px-4 py-1 rounded-3xl flex items-center gap-2';
+                pill.innerHTML = `
+                    ${tag}
+                    <span onclick="removeTag(${i}); event.stopImmediatePropagation()" class="cursor-pointer text-red-400">×</span>
+                `;
+                container.appendChild(pill);
+            });
+        }
+        
+        function addTagToTask() {
+            if (!currentTaskId) return;
+            const input = document.getElementById('new-tag-input');
+            const tag = input.value.trim().toLowerCase();
+            if (!tag) return;
+            
+            const task = tasks.find(t => t.id === currentTaskId);
+            if (task) {
+                if (!task.tags) task.tags = [];
+                if (!task.tags.includes(tag)) {
+                    task.tags.push(tag);
+                }
+                renderModalTags(task);
+                input.value = '';
+                saveTasks();
+            }
+        }
+        
+        function removeTag(index) {
+            if (!currentTaskId) return;
+            const task = tasks.find(t => t.id === currentTaskId);
+            if (task && task.tags) {
+                task.tags.splice(index, 1);
+                renderModalTags(task);
+                saveTasks();
+            }
+        }
+        
+        function refreshCurrentView() {
+            if (currentView === 'today') {
+                renderTasks(getTodayTasks());
+            } else if (currentView === 'flagged') {
+                renderTasks(getFlaggedTasks());
+            } else if (currentView === 'upcoming') {
+                renderTasks(getUpcomingTasks());
+            } else if (currentView === 'completed') {
+                renderTasks(tasks.filter(t => t.completed));
+            } else {
+                renderTasks(tasks.filter(t => !t.completed));
+            }
+            updateCounts();
+            renderProjects();
+        }
+        
+        function filterTasks() {
+            const term = document.getElementById('search-input').value.toLowerCase().trim();
+            if (!term) {
+                refreshCurrentView();
+                return;
+            }
+            
+            const filtered = tasks.filter(task => 
+                task.title.toLowerCase().includes(term) || 
+                (task.description && task.description.toLowerCase().includes(term))
+            );
+            
+            renderTasks(filtered);
+        }
+        
+        function filterByTag(tag) {
+            const filtered = tasks.filter(t => t.tags && t.tags.includes(tag) && !t.completed);
+            renderTasks(filtered);
+            document.getElementById('view-title').textContent = `#${tag}`;
+        }
+        
+        // Projects
+        function renderProjects() {
+            const container = document.getElementById('projects-list');
+            container.innerHTML = '';
+            
+            projects.forEach(project => {
+                const el = document.createElement('div');
+                el.className = `px-4 py-2.5 text-sm rounded-3xl flex items-center gap-3 cursor-pointer hover:bg-zinc-800 ${currentProjectFilter === project.id ? 'bg-yellow-400/10 text-yellow-400' : ''}`;
+                el.innerHTML = `
+                    <i class="fa-solid fa-folder text-zinc-400"></i>
+                    <span>${project.name}</span>
+                `;
+                el.onclick = () => {
+                    currentProjectFilter = project.id;
+                    currentView = 'inbox';
+                    const filtered = tasks.filter(t => t.projectId === project.id && !t.completed);
+                    document.getElementById('view-title').textContent = project.name;
+                    renderTasks(filtered);
+                };
+                container.appendChild(el);
+            });
+        }
+        
+        function createNewProject() {
+            document.getElementById('project-modal').classList.remove('hidden');
+            document.getElementById('new-project-name').focus();
+        }
+        
+        function closeProjectModal() {
+            document.getElementById('project-modal').classList.add('hidden');
+        }
+        
+        function saveNewProject() {
+            const name = document.getElementById('new-project-name').value.trim();
+            if (!name) return;
+            
+            projects.push({
+                id: 'p' + Date.now(),
+                name: name,
+                color: 'zinc'
+            });
+            
+            saveProjects();
+            renderProjects();
+            closeProjectModal();
+        }
+        
+        // Kanban
+        function renderKanban() {
+            const todoCol = document.getElementById('kanban-todo');
+            const progressCol = document.getElementById('kanban-progress');
+            const doneCol = document.getElementById('kanban-done');
+            
+            todoCol.innerHTML = '';
+            progressCol.innerHTML = '';
+            doneCol.innerHTML = '';
+            
+            const activeTasks = tasks.filter(t => !t.completed);
+            
+            activeTasks.forEach(task => {
+                const cardHTML = `
+                    <div onclick="openTaskModal('${task.id}')" 
+                         class="bg-zinc-900 border border-zinc-700 hover:border-yellow-400 rounded-3xl p-4 cursor-pointer task-item">
+                        <div class="font-medium">${task.title}</div>
+                        \( {task.dueDate ? `<div class="text-xs text-zinc-400 mt-3"> \){formatDate(task.dueDate)}</div>` : ''}
+                    </div>
+                `;
+                
+                // Simple assignment - in real app would use status field
+                if (task.priority === 'high') {
+                    todoCol.innerHTML += cardHTML;
+                } else if (task.priority === 'medium') {
+                    progressCol.innerHTML += cardHTML;
+                } else {
+                    doneCol.innerHTML += cardHTML;
+                }
+            });
+        }
+        
+        function switchView(view) {
+            currentView = view;
+            
+            document.getElementById('list-view').classList.add('hidden');
+            document.getElementById('kanban-view').classList.add('hidden');
+            
+            if (view === 'kanban') {
+                document.getElementById('kanban-view').classList.remove('hidden');
+                renderKanban();
+            } else {
+                document.getElementById('list-view').classList.remove('hidden');
+                // reuse existing switch logic
+                document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+                const navEl = document.getElementById(`nav-${view}`);
+                if (navEl) navEl.classList.add('active');
+                
+                let filtered = [];
+                document.getElementById('view-title').textContent = 
+                    view === 'inbox' ? 'Inbox' : view.charAt(0).toUpperCase() + view.slice(1);
+                
+                if (view === 'today') filtered = getTodayTasks();
+                else if (view === 'flagged') filtered = getFlaggedTasks();
+                else if (view === 'upcoming') filtered = getUpcomingTasks();
+                else if (view === 'completed') filtered = tasks.filter(t => t.completed);
+                else filtered = tasks.filter(t => !t.completed);
+                
+                renderTasks(filtered);
+            }
+            
+            updateCounts();
+        }
+        
+        function exportData() {
+            const data = {
+                tasks: tasks,
+                projects: projects,
+                exportedAt: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'flow-backup.json';
+            a.click();
+        }
+        
+        function clearCompleted() {
+            if (confirm('Clear all completed tasks?')) {
+                tasks = tasks.filter(t => !t.completed);
+                saveTasks();
+                refreshCurrentView();
+            }
+        }
+        
+        function toggleSidebar() {
+            // For mobile - simple alert for demo
+            alert("Sidebar toggle works best on mobile devices with Tailwind responsive classes.");
+        }
+        
+        function toggleDarkMode() {
+            // Already dark by default
+            alert("Theme is locked to dark for this modern experience ✨");
+        }
+        
+        // Keyboard shortcuts
+        function setupKeyboard() {
+            document.addEventListener('keydown', function(e) {
+                if (e.key === '/' && document.getElementById('search-input') !== document.activeElement) {
+                    e.preventDefault();
+                    document.getElementById('search-input').focus();
+                }
+                
+                if (e.metaKey && e.key === 'k') {
+                    e.preventDefault();
+                    showNewTaskModal();
+                }
+            });
+        }
+        
+        // Initialize everything
+        function initializeApp() {
+            loadData();
+            initTailwind();
+            renderProjects();
+            switchView('inbox');
+            updateCounts();
+            setupKeyboard();
+            
+            // Render lucide icons
+            setTimeout(() => {
+                if (typeof lucide !== "undefined") lucide.createIcons();
+            }, 100);
+            
+            // Auto save every 30s
+            setInterval(() => {
+                saveTasks();
+            }, 30000);
+            
+            console.log('%cFlow Task Manager initialized successfully ✅', 'color:#facc15; font-family:monospace');
+        }
+        
+        // Boot app
+        window.onload = initializeApp;
+    </script>
+</body>
+</html>
